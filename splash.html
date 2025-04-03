@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DUAL.Infodose Splash</title>
+<link href="favicon.svg" rel="icon" type="image/svg+xml"/>
+<style>
+    body {
+      margin: 0;
+      background-color: #000000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      transition: background-color 1s ease, opacity 1s ease;
+    }
+    .circle {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 3px solid white;
+      background: radial-gradient(circle at center, #ffffff11, #00000000);
+      box-shadow: 0 0 30px rgba(255,255,255,0.3), 0 0 70px rgba(255,255,255,0.15);
+      animation: pulse 2.5s ease-in-out infinite;
+      position: relative;
+      cursor: pointer;
+    }
+    .line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: white;
+      transform: translateY(-50%);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+    #themeToggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 9999px;
+      padding: 0.4rem 0.7rem;
+      cursor: pointer;
+      font-size: 1rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div id="themeToggle" onclick="alternarTema()">✨</div>
+<div class="circle" onclick="entrarApp()">
+<div class="line"></div>
+</div>
+<audio id="pulsoSom" preload="auto" src="https://cdn.pixabay.com/download/audio/2022/10/21/audio_76eab2b2fc.mp3?filename=gentle-ambience-126746.mp3"></audio>
+<script>
+    function aplicarTema(claro) {
+      localStorage.setItem("temaClaro", claro);
+      document.body.style.backgroundColor = claro ? '#f4f4f4' : '#000000';
+      document.body.style.color = claro ? '#000' : '#fff';
+    }
+    const hora = new Date().getHours();
+    let temaClaro = hora >= 6 && hora < 18;
+    aplicarTema(temaClaro);
+
+    function alternarTema() {
+      temaClaro = !temaClaro;
+      aplicarTema(temaClaro);
+    }
+
+    function entrarApp() {
+      document.getElementById('pulsoSom').play();
+      document.body.style.opacity = 0;
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
+    </script>
+</body>
+</html>
