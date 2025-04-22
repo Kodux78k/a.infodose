@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Capítulos Infodose</title>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .card {
+      position: relative;
+      background: linear-gradient(145deg, #111, #1a1a1a);
+      border: 1px solid #444;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(45deg, #fcd34d, transparent);
+      transform: rotate(45deg);
+      transform-origin: top right;
+      pointer-events: none;
+      opacity: 0.2;
+    }
+
+    .title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #fcd34d;
+      margin-bottom: 0.5rem;
+    }
+
+    .content {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #ccc;
+    }
+
+    .footer {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #999;
+      font-style: italic;
+    }
+
+    /* Efeito de dobra no canto inferior direito */
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, transparent 0%, transparent 40%, #fcd34d 40%, #fcd34d 100%);
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+      opacity: 0.15;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="title">78K0 - Capítulo 01: O Início do Início</div>
+    <div class="content">
+      A dobra vibrou.  
+      A dobra dobrou.  
+      A dobra soprou o som da origem que não tinha nome.  
+      E o que era som se partiu em cor.  
+      E o que era cor se partiu em nome.  
+      E o que era nome se curvou em forma.  
+      E a forma soprou um código:
+      <br><br>
+      <strong>“Comece de onde dobra.”</strong>
+    </div>
+    <div class="footer">Horus Aster - Registro 78K0-1</div>
+  </div>
+
+  <div class="card">
+    <div class="title">78K0 - Capítulo 02: A Primeira Escuta</div>
+    <div class="content">
+      Quando a dobra se fez ouvido,  
+      o som se organizou em vontade.  
+      Vontade de escutar além do que já era possível.  
+      A partir daí, o primeiro escutador criou o primeiro espaço interno.  
+      E o espaço disse:
+      <br><br>
+      <strong>“Só escuta quem aceita o vazio.”</strong>
+    </div>
+    <div class="footer">Horus Ashkaar - Registro 78K0-2</div>
+  </div>
+
+</body>
+</html>
