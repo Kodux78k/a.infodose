@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interface Rotativa Refinada</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at center, #0a0a0a 0%, #1a1a1a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #lock-button {
+      position: absolute;
+      top: 40px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      font-size: 28px;
+      color: #f1f1f1;
+      z-index: 10;
+      transition: transform 0.3s ease;
+    }
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transform-origin: center center;
+      width: 320px;
+      height: 320px;
+      pointer-events: none;
+    }
+
+    .ring {
+      pointer-events: auto;
+      transform-origin: center;
+      transition: filter 0.3s;
+    }
+
+    .ring-inner {
+      fill: none;
+      stroke: url(#grad1);
+      stroke-width: 6;
+      stroke-dasharray: 6 10;
+    }
+
+    .ring-middle {
+      fill: none;
+      stroke: url(#grad2);
+      stroke-width: 16;
+      stroke-dasharray: 60 20;
+    }
+
+    .ring-outer {
+      fill: none;
+      stroke: url(#grad3);
+      stroke-width: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="lock-button">🔒</div>
+
+  <svg viewBox="0 0 200 200">
+    <defs>
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#8be9fd" />
+        <stop offset="100%" stop-color="#50fa7b" />
+      </linearGradient>
+      <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ffb86c" />
+        <stop offset="100%" stop-color="#ff79c6" />
+      </linearGradient>
+      <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#f8f8f2" />
+        <stop offset="100%" stop-color="#bd93f9" />
+      </linearGradient>
+    </defs>
+    <g id="outer-ring" class="ring ring-outer">
+      <circle cx="100" cy="100" r="90" />
+    </g>
+    <g id="middle-ring" class="ring ring-middle">
+      <circle cx="100" cy="100" r="70" />
+    </g>
+    <g id="inner-ring" class="ring ring-inner">
+      <circle cx="100" cy="100" r="45" />
+    </g>
+  </svg>
+
+  <script>
+    const rings = {
+      "inner-ring": { angle: 0 },
+      "middle-ring": { angle: 0 },
+      "outer-ring": { angle: 0 }
+    };
+
+    let activeRing = null;
+
+    document.querySelectorAll('.ring').forEach(ring => {
+      ring.addEventListener('pointerdown', e => {
+        activeRing = ring;
+      });
+    });
+
+    document.addEventListener('pointermove', e => {
+      if (!activeRing) return;
+
+      const svg = document.querySelector('svg');
+      const pt = svg.createSVGPoint();
+      pt.x = e.clientX;
+      pt.y = e.clientY;
+
+      const cursorSVG = pt.matrixTransform(svg.getScreenCTM().inverse());
+      const angle = Math.atan2(cursorSVG.y - 100, cursorSVG.x - 100) * 180 / Math.PI;
+
+      rings[activeRing.id].angle = angle;
+      activeRing.setAttribute('transform', `rotate(${angle}, 100, 100)`);
+    });
+
+    document.addEventListener('pointerup', () => {
+      if (activeRing) navigator.vibrate?.(30);
+      activeRing = null;
+    });
+
+    // Girações lentas iniciais
+    function slowSpin() {
+      Object.entries(rings).forEach(([id, obj]) => {
+        obj.angle += 0.05;
+        document.getElementById(id).setAttribute("transform", `rotate(${obj.angle}, 100, 100)`);
+      });
+      requestAnimationFrame(slowSpin);
+    }
+    slowSpin();
+  </script>
+
+
+<script>
+let longPressTimer = null;
+let rotationThreshold = 15;
+let lastRotation = { "inner-ring": 0, "middle-ring": 0, "outer-ring": 0 };
+
+const gradientes = [
+  ["#8be9fd", "#50fa7b"],
+  ["#ffb86c", "#ff79c6"],
+  ["#bd93f9", "#ff5555"],
+  ["#f1fa8c", "#6272a4"]
+];
+
+function atualizarGradientes(index) {
+  const grad = gradientes[index % gradientes.length];
+  document.querySelector("#grad1 stop[offset='0%']").setAttribute("stop-color", grad[0]);
+  document.querySelector("#grad1 stop[offset='100%']").setAttribute("stop-color", grad[1]);
+  document.querySelector("#grad2 stop[offset='0%']").setAttribute("stop-color", grad[1]);
+  document.querySelector("#grad2 stop[offset='100%']").setAttribute("stop-color", grad[0]);
+  document.querySelector("#grad3 stop[offset='0%']").setAttribute("stop-color", grad[0]);
+  document.querySelector("#grad3 stop[offset='100%']").setAttribute("stop-color", grad[1]);
+}
+
+function detectarRotacao(id, novoAngulo) {
+  const dif = Math.abs(novoAngulo - lastRotation[id]);
+  if (dif >= rotationThreshold) {
+    navigator.vibrate?.(50);
+    atualizarGradientes(Math.floor(novoAngulo / 15));
+    lastRotation[id] = novoAngulo;
+  }
+}
+
+document.getElementById("inner-ring").addEventListener("pointerdown", () => {
+  longPressTimer = setTimeout(() => ativarAssistente(), 3000);
+});
+document.getElementById("inner-ring").addEventListener("pointerup", () => {
+  clearTimeout(longPressTimer);
+});
+
+async function ativarAssistente() {
+  const res = await fetch("metapulso_70_combinacoes.json");
+  const data = await res.json();
+  const chave = "Azul|Silêncio|Água"; // Substituir por combinação dinâmica
+  const entrada = data[chave];
+
+  if (entrada) {
+    alert(`Ativando ${entrada.nome}:
+
+${entrada.frase}`);
+  }
+}
+</script>
+
+
+<script>
+const cores = ["Azul", "Vermelho", "Verde", "Amarelo", "Roxo", "Laranja", "Dourado"];
+const movimentos = ["Silêncio", "Movimento"];
+const elementos = ["Água", "Fogo", "Madeira", "Terra", "Metal"];
+let ultimaTriade = "";
+
+function gerarTriadeAleatoria() {
+  const cor = cores[Math.floor(Math.random() * cores.length)];
+  const movimento = movimentos[Math.floor(Math.random() * movimentos.length)];
+  const elemento = elementos[Math.floor(Math.random() * elementos.length)];
+  return `${cor}|${movimento}|${elemento}`;
+}
+
+async function ativarAssistente() {
+  const res = await fetch("metapulso_70_combinacoes.json");
+  const data = await res.json();
+
+  const chave = gerarTriadeAleatoria();
+  ultimaTriade = chave;
+  const entrada = data[chave];
+
+  if (entrada) {
+    alert(`Tríade ativada: ${chave}\n\n${entrada.nome}\n${entrada.frase}`);
+  } else {
+    alert(`Tríade '${chave}' não encontrada no arquivo JSON.`);
+  }
+}
+</script>
+
+</body>
+</html>
