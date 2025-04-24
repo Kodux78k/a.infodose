@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interface Rotativa Refinada</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at center, #0a0a0a 0%, #1a1a1a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #lock-button {
+      position: absolute;
+      top: 40px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      font-size: 28px;
+      color: #f1f1f1;
+      z-index: 10;
+      transition: transform 0.3s ease;
+    }
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      height: 320px;
+      pointer-events: none;
+    }
+
+    .ring {
+      pointer-events: auto;
+      transform-origin: 50% 50%;
+      transform-box: fill-box;
+      transition: filter 0.3s;
+    }
+
+    .ring-inner {
+      fill: none;
+      stroke: url(#grad1);
+      stroke-width: 6;
+      stroke-dasharray: 6 10;
+    }
+
+    .ring-middle {
+      fill: none;
+      stroke: url(#grad2);
+      stroke-width: 16;
+      stroke-dasharray: 60 20;
+    }
+
+    .ring-outer {
+      fill: none;
+      stroke: url(#grad3);
+      stroke-width: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="lock-button">🔒</div>
+
+  <svg viewBox="0 0 200 200">
+    <defs>
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#8be9fd" />
+        <stop offset="100%" stop-color="#50fa7b" />
+      </linearGradient>
+      <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ffb86c" />
+        <stop offset="100%" stop-color="#ff79c6" />
+      </linearGradient>
+      <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#f8f8f2" />
+        <stop offset="100%" stop-color="#bd93f9" />
+      </linearGradient>
+    </defs>
+    <g id="outer-ring" class="ring ring-outer">
+      <circle cx="100" cy="100" r="90" />
+    </g>
+    <g id="middle-ring" class="ring ring-middle">
+      <circle cx="100" cy="100" r="70" />
+    </g>
+    <g id="inner-ring" class="ring ring-inner">
+      <circle cx="100" cy="100" r="45" />
+    </g>
+  </svg>
+
+  <script>
+    const rings = {
+      "inner-ring": { angle: 0 },
+      "middle-ring": { angle: 0 },
+      "outer-ring": { angle: 0 }
+    };
+
+    let activeRing = null;
+
+    document.querySelectorAll('.ring').forEach(ring => {
+      ring.addEventListener('pointerdown', () => {
+        activeRing = ring;
+      });
+    });
+
+    document.addEventListener('pointermove', e => {
+      if (!activeRing) return;
+
+      const rect = activeRing.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+
+      rings[activeRing.id].angle = angle;
+      activeRing.style.transform = `rotate(${angle}deg)`;
+    });
+
+    document.addEventListener('pointerup', () => {
+      if (activeRing) navigator.vibrate?.(30);
+      activeRing = null;
+    });
+
+    function slowSpin() {
+      Object.entries(rings).forEach(([id, obj]) => {
+        obj.angle += 0.05;
+        document.getElementById(id).style.transform = `rotate(${obj.angle}deg)`;
+      });
+      requestAnimationFrame(slowSpin);
+    }
+
+    slowSpin();
+  </script>
+
+</body>
+</html>
