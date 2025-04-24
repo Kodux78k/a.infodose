@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KOBLLUX A.Infodose</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0a0a0a;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #bgCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .center-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    #symbol {
+      width: 200px;
+      height: 200px;
+      animation: spin 20s linear infinite;
+      transition: transform 1s ease, filter 0.5s ease;
+      cursor: pointer;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 10px #ffcc00); }
+      50%      { filter: drop-shadow(0 0 30px #ffaa00); }
+    }
+
+    .clicked {
+      animation: clickSpin 1.5s ease forwards, clickGlow 1s ease-out;
+    }
+
+    @keyframes clickSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(540deg); }
+    }
+
+    @keyframes clickGlow {
+      0% { filter: drop-shadow(0 0 10px #fff700); }
+      50% { filter: drop-shadow(0 0 40px #fff700); }
+      100% { filter: drop-shadow(0 0 10px #fff700); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="center-container">
+    <img id="symbol" src="KOBLLUX-symbol-lowQ.png" alt="KOBLLUX Symbol" />
+  </div>
+
+  <script>
+    // Animação de clique
+    const symbol = document.getElementById("symbol");
+    symbol.addEventListener("click", () => {
+      symbol.classList.remove("clicked");
+      void symbol.offsetWidth; // força reflow para reiniciar animação
+      symbol.classList.add("clicked");
+    });
+
+    // Partículas de fundo animadas
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 1.5 + 0.5;
+        this.alpha = Math.random();
+        this.dx = (Math.random() - 0.5) * 0.3;
+        this.dy = (Math.random() - 0.5) * 0.3;
+      }
+
+      update() {
+        this.x += this.dx;
+        this.y += this.dy;
+        if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 200, 50, ${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    function initParticles(num = 100) {
+      particles = [];
+      for (let i = 0; i < num; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
+    });
+
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
