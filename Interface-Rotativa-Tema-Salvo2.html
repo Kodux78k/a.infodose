@@ -76,7 +76,7 @@
 <body>
 
   <div id="particles-js"></div>
-  <div id="botao-central">⭕️</div>
+  <div id="botao-central">◉</div>
 
   <svg viewBox="0 0 200 200">
     <defs>
@@ -156,7 +156,7 @@
         localStorage.setItem("ultima_triade_simbólica", JSON.stringify({ chave, ...entrada }));
         localStorage.setItem("tema_ativo", entrada.tema || "default");
         tocarSomSuave();
-        setTimeout(() => window.location.href = "index.html", 1500);
+        setTimeout(() => window.location.href = "index_menu.html", 1500);
       } else {
         alert(`Tríade '${chave}' não encontrada.`);
       }
