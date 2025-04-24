@@ -1,82 +1,82 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interface Rotativa Simbólica</title>
+  <title>Interface Rotativa Viva</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle at center, #0a0a0a 0%, #1a1a1a 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 0;
+      height: 100%;
       overflow: hidden;
-      touch-action: none;
-      transition: background 1s ease;
+      background-color: #0a0a0a;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    svg {
-      width: 320px;
-      height: 320px;
-    }
-
-    .ring {
-      pointer-events: auto;
-      transform-origin: center;
-      transition: transform 0.2s ease-out, filter 0.3s;
-    }
-
-    .ring.active {
-      filter: drop-shadow(0 0 8px #ffffffaa);
-    }
-
-    .ring-inner {
-      fill: none;
-      stroke: url(#grad1);
-      stroke-width: 6;
-      stroke-dasharray: 6 10;
-    }
-
-    .ring-middle {
-      fill: none;
-      stroke: url(#grad2);
-      stroke-width: 16;
-      stroke-dasharray: 60 20;
-    }
-
-    .ring-outer {
-      fill: none;
-      stroke: url(#grad3);
-      stroke-width: 10;
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
     }
 
     #botao-central {
       position: absolute;
-      width: 80px;
-      height: 80px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
       background: rgba(255, 255, 255, 0.08);
       border-radius: 50%;
+      font-size: 2rem;
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      color: white;
       cursor: pointer;
-      transition: transform 0.2s ease;
-      z-index: 5;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      z-index: 10;
+      transition: transform 0.2s;
     }
 
     #botao-central:active {
-      transform: scale(0.9);
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 320px;
+      height: 320px;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+
+    .ring {
+      transform-origin: center;
+      pointer-events: auto;
+      animation: pulse 2.5s infinite ease-in-out;
+      transition: filter 0.3s;
+    }
+
+    .ring.active {
+      filter: drop-shadow(0 0 10px #fff);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
     }
   </style>
 </head>
 <body>
 
-  <div id="botao-central">⭕️</div>
+  <div id="particles-js"></div>
+  <div id="botao-central"></div>
 
   <svg viewBox="0 0 200 200">
     <defs>
@@ -141,7 +141,7 @@
     }
 
     document.querySelectorAll('.ring').forEach(ring => {
-      ring.addEventListener('pointerdown', e => {
+      ring.addEventListener('pointerdown', () => {
         document.querySelectorAll('.ring').forEach(r => r.classList.remove('active'));
         ring.classList.add('active');
         activeRing = ring;
@@ -217,21 +217,31 @@
         localStorage.setItem("tema_ativo", entrada.tema || "default");
         exibirTriade(chave, entrada);
         tocarSomSuave();
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1500);
-      } else {
-        alert(`Tríade '${chave}' não encontrada no arquivo JSON.`);
+        setTimeout(() => window.location.href = "index.html", 1500);
       }
     }
 
     document.getElementById("botao-central").addEventListener("click", ativarAssistente);
+  </script>
 
-    // Aplicar tema salvo
-    const tema = localStorage.getItem("tema_ativo");
-    if (tema && tema !== "default") {
-      document.body.style.background = tema;
-    }
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 100 },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.2 },
+        size: { value: 2 },
+        move: { enable: true, speed: 1 }
+      },
+      interactivity: {
+        events: { onhover: { enable: true, mode: "repulse" }},
+        modes: { repulse: { distance: 80 }}
+      },
+      retina_detect: true
+    });
+
   </script>
 </body>
 </html>
