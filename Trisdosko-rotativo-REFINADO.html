@@ -103,51 +103,48 @@
   </svg>
 
   <script>
-    const rings = {
-      "inner-ring": { angle: 0 },
-      "middle-ring": { angle: 0 },
-      "outer-ring": { angle: 0 }
-    };
+const rings = {
+  "inner-ring": { angle: 0 },
+  "middle-ring": { angle: 0 },
+  "outer-ring": { angle: 0 }
+};
 
-    let activeRing = null;
+let activeRing = null;
+let lastAngle = 0;
 
-    document.querySelectorAll('.ring').forEach(ring => {
-      ring.addEventListener('pointerdown', e => {
-        activeRing = ring;
-      });
-    });
+document.querySelectorAll('.ring').forEach(ring => {
+  ring.addEventListener('pointerdown', e => {
+    activeRing = ring;
+    lastAngle = getCursorAngle(e);
+  });
+});
 
-    document.addEventListener('pointermove', e => {
-      if (!activeRing) return;
+document.addEventListener('pointermove', e => {
+  if (!activeRing) return;
 
-      const svg = document.querySelector('svg');
-      const pt = svg.createSVGPoint();
-      pt.x = e.clientX;
-      pt.y = e.clientY;
+  const newAngle = getCursorAngle(e);
+  const delta = newAngle - lastAngle;
+  const id = activeRing.id;
 
-      const cursorSVG = pt.matrixTransform(svg.getScreenCTM().inverse());
-      const angle = Math.atan2(cursorSVG.y - 100, cursorSVG.x - 100) * 180 / Math.PI;
+  rings[id].angle += delta;
+  activeRing.setAttribute('transform', `rotate(${rings[id].angle}, 100, 100)`);
+  detectarRotacao(id, rings[id].angle); // ativa cor e vibração
+  lastAngle = newAngle;
+});
 
-      rings[activeRing.id].angle = angle;
-      activeRing.setAttribute('transform', `rotate(${angle}, 100, 100)`);
-    });
+document.addEventListener('pointerup', () => {
+  activeRing = null;
+});
 
-    document.addEventListener('pointerup', () => {
-      if (activeRing) navigator.vibrate?.(30);
-      activeRing = null;
-    });
-
-    // Girações lentas iniciais
-    function slowSpin() {
-      Object.entries(rings).forEach(([id, obj]) => {
-        obj.angle += 0.05;
-        document.getElementById(id).setAttribute("transform", `rotate(${obj.angle}, 100, 100)`);
-      });
-      requestAnimationFrame(slowSpin);
-    }
-    slowSpin();
-  </script>
-
+function getCursorAngle(e) {
+  const svg = document.querySelector('svg');
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  const cursorSVG = pt.matrixTransform(svg.getScreenCTM().inverse());
+  return Math.atan2(cursorSVG.y - 100, cursorSVG.x - 100) * 180 / Math.PI;
+}
+</script>
 
 <script>
 let longPressTimer = null;
