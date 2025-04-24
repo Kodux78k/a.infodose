@@ -144,5 +144,101 @@
       localStorage.setItem('triade_ativa', JSON.stringify(triade));
       window.location.href = "index.html";
     }
-    </script></body>
+    </script>
+<!-- Painel de ajustes simbólicos -->
+<button id="btn-ajustes" style="
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  background: rgba(255,255,255,0.05);
+  border: none;
+  border-radius: 50%;
+  z-index: 999;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+">⚙️</button>
+
+<div id="painel-sliders" style="
+  position: fixed;
+  top: 50px;
+  left: 10px;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 998;
+  opacity: 0.7;
+">
+  <input type="range" id="slider-botoes" min="0" max="4" value="0" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px;" />
+  <input type="range" id="slider-particulas" min="0" max="3" value="1" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px;" />
+  <input type="range" id="slider-logo" min="1" max="5" value="1" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px;" />
+</div>
+
+<div id="simbolo-pulso" style="
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  z-index: 10;
+  opacity: 0.8;
+  animation: pulse 2s infinite;
+  display: none;
+"></div>
+
+<script>
+document.getElementById('btn-ajustes').onclick = () => {
+  const painel = document.getElementById('painel-sliders');
+  painel.style.display = painel.style.display === 'flex' ? 'none' : 'flex';
+};
+
+function gerarSimbolos(indexBotoes, indexParticulas, logo) {
+  const map = {
+    '0': '⭕️', '1': '💧', '2': '🔥', '3': '🌳', '4': '⚡️',
+    '0p': '⛰', '1p': '⏳', '2p': '🧱', '3p': '🪞',
+    '1l': '🌫', '2l': '🌀', '3l': '✨', '4l': '🌟', '5l': '🔘'
+  };
+  return [map[`${indexBotoes}`], map[`${indexParticulas}p`], map[`${logo}l`]];
+}
+
+function ativarSimbolicoPulsoCosmico() {
+  const botoes = document.getElementById('slider-botoes').value;
+  const particulas = document.getElementById('slider-particulas').value;
+  const logo = document.getElementById('slider-logo').value;
+
+  const simbolos = gerarSimbolos(botoes, particulas, logo);
+
+  fetch("https://kodux78k.github.io/DualInfodose/data/metapulso_70_combinacoes.json")
+    .then(r => r.json())
+    .then(data => {
+      const match = Object.values(data).find(item =>
+        simbolos.every(s => item.simbolos.includes(s))
+      );
+      if (match) {
+        localStorage.setItem('assistente_ativo', JSON.stringify(match));
+        const pulso = document.getElementById('simbolo-pulso');
+        pulso.innerText = match.simbolos[0];
+        pulso.style.display = 'block';
+      }
+    });
+}
+
+['slider-botoes', 'slider-particulas', 'slider-logo'].forEach(id => {
+  document.getElementById(id).addEventListener('input', ativarSimbolicoPulsoCosmico);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const ativo = localStorage.getItem('assistente_ativo');
+  if (ativo) {
+    const assistente = JSON.parse(ativo);
+    const pulso = document.getElementById('simbolo-pulso');
+    if (pulso) {
+      pulso.innerText = assistente.simbolos[0];
+      pulso.style.display = 'block';
+    }
+  }
+});
+</script>
+</body>
 </html>
