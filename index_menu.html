@@ -214,15 +214,15 @@
 
   <div class="symbol-bar">
     <button class="symbol-button" onclick="loadPage('Indexdual3-upgrade_FINAL_RECEPTOR.html')">◉</button>
-    <button class="symbol-button" onclick="loadPage('Trisdosko-rotativo-FINAL.html')">◉</button>
-    <button class="symbol-button" onclick="loadPage('Trisdosko-rotativo-REFINADO.html')">◉</button>
+    <button class="symbol-button" onclick="loadPage('Interface-Rotativa-Simbolica.html')">◉</button>
+    <button class="symbol-button" onclick="loadPage('Interface-Rotativa-Tema-Salvo.html')">◉</button>
   </div>
 
   <!-- Botão original -->
   <button class="lock-button" onclick="loadPage('splash.html')"></button>
 
   <!-- Novo botão que carrega a interface rotativa -->
-  <button class="rotativo-button" onclick="loadPage('RotativoInterface.html')">⟳</button>
+  <button class="rotativo-button" onclick="loadPage('Interface-Rotativa-Tema-rece.html')">⟳</button>
 
   <script>
     const frame = document.getElementById('frame');
@@ -239,6 +239,13 @@
       }, 300);
     }
   </script>
-
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const temaSalvo = localStorage.getItem('tema_ativo');
+    if (temaSalvo && temaSalvo !== 'default') {
+      document.body.style.background = temaSalvo;
+    }
+  });
+</script>
 </body>
 </html>
