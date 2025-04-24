@@ -219,7 +219,7 @@
 
 
 
-<!-- Botão para abrir sliders -->
+<!-- Painel de ajustes simbólicos -->
 <button id="btn-ajustes" style="
   position: fixed;
   top: 10px;
@@ -232,47 +232,90 @@
   z-index: 999;
   cursor: pointer;
   backdrop-filter: blur(4px);
-">•</button>
+">⚙️</button>
 
-<!-- Painel com sliders -->
 <div id="painel-sliders" style="
   position: fixed;
-  bottom: 50px;
+  top: 50px;
   left: 10px;
   display: none;
   flex-direction: column;
   gap: 20px;
   z-index: 998;
   opacity: 0.7;
-  transition: opacity 0.3s ease;
 ">
-  <input type="range" id="slider-botoes" min="0" max="4" value="0" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px; background: transparent;" />
-  <input type="range" id="slider-particulas" min="0" max="3" value="1" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px; background: transparent;" />
-  <input type="range" id="slider-logo" min="1" max="5" value="1" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px; background: transparent;" />
+  <input type="range" id="slider-botoes" min="0" max="4" value="0" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px;" />
+  <input type="range" id="slider-particulas" min="0" max="3" value="1" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px;" />
+  <input type="range" id="slider-logo" min="1" max="5" value="1" style="writing-mode: bt-lr; transform: rotate(270deg); height: 100px;" />
 </div>
 
+<div id="simbolo-pulso" style="
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  z-index: 10;
+  opacity: 0.8;
+  animation: pulse 2s infinite;
+  display: none;
+"></div>
+
 <script>
-  const ajustesBtn = document.getElementById('btn-ajustes');
+document.getElementById('btn-ajustes').onclick = () => {
   const painel = document.getElementById('painel-sliders');
-  ajustesBtn.onclick = () => {
-    painel.style.display = painel.style.display === 'flex' ? 'none' : 'flex';
+  painel.style.display = painel.style.display === 'flex' ? 'none' : 'flex';
+};
+
+function gerarSimbolos(indexBotoes, indexParticulas, logo) {
+  const map = {
+    '0': '⭕️', '1': '💧', '2': '🔥', '3': '🌳', '4': '⚡️',
+    '0p': '⛰', '1p': '⏳', '2p': '🧱', '3p': '🪞',
+    '1l': '🌫', '2l': '🌀', '3l': '✨', '4l': '🌟', '5l': '🔘'
   };
+  return [map[`${indexBotoes}`], map[`${indexParticulas}p`], map[`${logo}l`]];
+}
 
-  function enviarAjustes() {
-    const botoes = document.getElementById('slider-botoes').value;
-    const particulas = document.getElementById('slider-particulas').value;
-    const logo = document.getElementById('slider-logo').value;
-    const frame = document.getElementById('frame');
-    frame.contentWindow.postMessage({
-      tipo: "ajusteSimbolico",
-      botoes: botoes,
-      particulas: particulas,
-      logo: logo
-    }, "*");
+function ativarSimbolicoMetalux() {
+  const botoes = document.getElementById('slider-botoes').value;
+  const particulas = document.getElementById('slider-particulas').value;
+  const logo = document.getElementById('slider-logo').value;
+
+  const simbolos = gerarSimbolos(botoes, particulas, logo);
+
+  fetch("https://kodux78k.github.io/DualInfodose/data/metapulso_70_combinacoes.json")
+    .then(r => r.json())
+    .then(data => {
+      const match = Object.values(data).find(item =>
+        simbolos.every(s => item.simbolos.includes(s))
+      );
+      if (match) {
+        localStorage.setItem('assistente_ativo', JSON.stringify(match));
+        const pulso = document.getElementById('simbolo-pulso');
+        pulso.innerText = match.simbolos[0];
+        pulso.style.display = 'block';
+        const resp = document.getElementById("respostaBox");
+        if (resp) resp.innerText = `Ativando ${match.nome} — “${match.frase}”`;
+      }
+    });
+}
+
+['slider-botoes', 'slider-particulas', 'slider-logo'].forEach(id => {
+  document.getElementById(id).addEventListener('input', ativarSimbolicoMetalux);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const ativo = localStorage.getItem('assistente_ativo');
+  if (ativo) {
+    const assistente = JSON.parse(ativo);
+    const pulso = document.getElementById('simbolo-pulso');
+    if (pulso) {
+      pulso.innerText = assistente.simbolos[0];
+      pulso.style.display = 'block';
+    }
+    const resp = document.getElementById("respostaBox");
+    if (resp) resp.innerText = `Ativo: ${assistente.nome} — “${assistente.frase}”`;
   }
-
-  ['slider-botoes', 'slider-particulas', 'slider-logo'].forEach(id => {
-    document.getElementById(id).addEventListener('input', enviarAjustes);
-  });
+});
 </script>
 </body></html>
