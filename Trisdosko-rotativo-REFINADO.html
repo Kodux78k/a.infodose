@@ -102,50 +102,48 @@
     </g>
   </svg>
 
-  <script>
-const rings = {
-  "inner-ring": { angle: 0 },
-  "middle-ring": { angle: 0 },
-  "outer-ring": { angle: 0 }
-};
+    <script>
+    const rings = {
+      "inner-ring": { angle: 0 },
+      "middle-ring": { angle: 0 },
+      "outer-ring": { angle: 0 }
+    };
 
-let activeRing = null;
-let lastAngle = 0;
+    let activeRing = null;
 
-document.querySelectorAll('.ring').forEach(ring => {
-  ring.addEventListener('pointerdown', e => {
-    activeRing = ring;
-    lastAngle = getCursorAngle(e);
-  });
-});
+    document.querySelectorAll('.ring').forEach(ring => {
+      ring.addEventListener('pointerdown', () => {
+        activeRing = ring;
+      });
+    });
 
-document.addEventListener('pointermove', e => {
-  if (!activeRing) return;
+    document.addEventListener('pointermove', e => {
+      if (!activeRing) return;
 
-  const newAngle = getCursorAngle(e);
-  const delta = newAngle - lastAngle;
-  const id = activeRing.id;
+      const rect = activeRing.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
 
-  rings[id].angle += delta;
-  activeRing.setAttribute('transform', `rotate(${rings[id].angle}, 100, 100)`);
-  detectarRotacao(id, rings[id].angle); // ativa cor e vibração
-  lastAngle = newAngle;
-});
+      rings[activeRing.id].angle = angle;
+      activeRing.style.transform = `rotate(${angle}deg)`;
+    });
 
-document.addEventListener('pointerup', () => {
-  activeRing = null;
-});
+    document.addEventListener('pointerup', () => {
+      if (activeRing) navigator.vibrate?.(30);
+      activeRing = null;
+    });
 
-function getCursorAngle(e) {
-  const svg = document.querySelector('svg');
-  const pt = svg.createSVGPoint();
-  pt.x = e.clientX;
-  pt.y = e.clientY;
-  const cursorSVG = pt.matrixTransform(svg.getScreenCTM().inverse());
-  return Math.atan2(cursorSVG.y - 100, cursorSVG.x - 100) * 180 / Math.PI;
-}
-</script>
+    function slowSpin() {
+      Object.entries(rings).forEach(([id, obj]) => {
+        obj.angle += 0.05;
+        document.getElementById(id).style.transform = `rotate(${obj.angle}deg)`;
+      });
+      requestAnimationFrame(slowSpin);
+    }
 
+    slowSpin();
+  </script>
 <script>
 let longPressTimer = null;
 let rotationThreshold = 15;
