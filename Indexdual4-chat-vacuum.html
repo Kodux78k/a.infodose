@@ -191,7 +191,7 @@ async function generateBotReply(userText) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "allenai/molmo-7b-d",
+        model: "openrouter/allenai/molmo-7b-d:free",
         messages: [
           { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
           { role: "user", content: mensagemPrompt }
