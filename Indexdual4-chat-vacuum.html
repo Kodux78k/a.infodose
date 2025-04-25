@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>dual.Infodose Chat Cinematográfico</title>
+<title>dual.Infodose Chat vacuum</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 :root {
@@ -187,7 +187,7 @@ async function generateBotReply(userText) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "alenai/molmo-7b-fp16-hf",
+        model: "allenai/molmo-7b-d:free",
         messages: [
           { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
           { role: "user", content: mensagemPrompt }
