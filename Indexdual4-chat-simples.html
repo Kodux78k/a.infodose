@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Chat simplificado</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+body {
+  background: linear-gradient(to bottom, #000000, #1a1a1a);
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+.response-container {
+  margin-top: auto;
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  min-height: 100px;
+  width: 90%;
+  max-width: 500px;
+  font-size: 1.2em;
+}
+.input-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 90px;
+  width: 100%;
+  max-width: 500px;
+}
+input {
+  flex-grow: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1em;
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+}
+button {
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+</head>
+<body>
+<div class="response-container" id="response">
+  <strong>Olá, como posso ajudar você?</strong>
+</div>
+<div class="input-container">
+  <input id="userInput" placeholder="Digite sua mensagem..." type="text"/>
+  <button onclick="sendMessage()">➤</button>
+</div>
+<script>
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (text === '') return;
+  generateBotReply(text);
+  input.value = '';
+}
+
+async function generateBotReply(userText) {
+  const responseDiv = document.getElementById('response');
+  responseDiv.textContent = "Processando...";
+
+  try {
+    const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "allenai/molmo-7b-d:free",
+        messages: [
+          { role: "user", content: userText }
+        ],
+        temperature: 1.0,
+        max_tokens: 500
+      })
+    });
+
+    if (!resposta.ok) {
+      const erroTexto = await resposta.text();
+      console.error("Erro da API:", resposta.status, erroTexto);
+      responseDiv.textContent = "Erro da IA: " + resposta.statusText;
+      return;
+    }
+
+    const data = await resposta.json();
+    const reply = data.choices?.[0]?.message?.content || "Erro na resposta.";
+    responseDiv.textContent = reply;
+
+  } catch (e) {
+    console.error("Erro geral:", e);
+    responseDiv.textContent = "Erro na conexão com a IA.";
+  }
+}
+</script>
+</body>
+</html>
