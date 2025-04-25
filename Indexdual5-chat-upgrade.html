@@ -189,21 +189,52 @@ function sendMessage() {
 
 async function generateBotReply(userText) {
   const responseDiv = document.getElementById('response');
-  responseDiv.textContent = "Processando pulso simbólico...";
+  responseDiv.innerHTML = "Processando pulso simbólico...";
 
   try {
-    const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
+    const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
+
+    // 1. Verifica se o texto do usuário ativa diretamente uma tríade
+    let triadeAtivada = null;
+
+    const ativacaoMatch = userText.match(/^Ativar TRIAD:\s*(.+)$/i);
+    if (ativacaoMatch) {
+      const triadeTexto = ativacaoMatch[1];
+      const triade = triadeTexto.split("|").map(s => s.trim());
+      if (triade.length === 3) {
+        localStorage.setItem("triade_ativa", JSON.stringify(triade));
+        responseDiv.innerHTML = `Tríade ativada: <strong>${triade.join(" | ")}</strong>`;
+        return;
+      } else {
+        responseDiv.innerHTML = "Formato inválido. Use: <strong>Ativar TRIAD: SIMBOLO1 | SIMBOLO2 | SIMBOLO3</strong>";
+        return;
+      }
+    }
+
+    // 2. Se não veio pelo comando, busca automaticamente por nome, frase ou prompt
+    for (const key in json) {
+      const dados = json[key];
+      if (
+        userText.includes(dados.nome) ||
+        userText.includes(dados.frase) ||
+        userText.includes(dados.prompt)
+      ) {
+        triadeAtivada = key.split("|").map(s => s.trim());
+        localStorage.setItem("triade_ativa", JSON.stringify(triadeAtivada));
+        break;
+      }
+    }
+
+    const triade = triadeAtivada || JSON.parse(localStorage.getItem('triade_ativa') || '[]');
     if (triade.length !== 3) {
-      responseDiv.innerHTML = "<strong>Tríade simbólica incompleta.</strong> Escolha 3 símbolos para ativar seu assistente.";
+      responseDiv.innerHTML = "<strong>Tríade simbólica incompleta.</strong> Escolha ou ative uma tríade para acessar o assistente.";
       return;
     }
 
-    const sortedTriade = [...triade].sort();
-
-    const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
-
+    // 3. Encontrar assistente correspondente à tríade
+    const sortedTriade = [...triade].sort((a, b) => a.localeCompare(b));
     const matchKey = Object.keys(json).find(key => {
-      const chaves = key.split("|").map(k => k.trim()).sort();
+      const chaves = key.split("|").map(k => k.trim()).sort((a, b) => a.localeCompare(b));
       return JSON.stringify(chaves) === JSON.stringify(sortedTriade);
     });
 
@@ -215,11 +246,10 @@ async function generateBotReply(userText) {
     const assistente = json[matchKey];
     const mensagemPrompt = assistente.prompt + "\n\nAgora responda à pergunta do usuário com base nisso:\n" + userText;
 
-    // IMPORTANTE: substitua SUA_CHAVE_VACUM_AQUI pela sua chave real da API
     const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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", // <-- Substitua por sua chave
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -235,16 +265,13 @@ async function generateBotReply(userText) {
 
     const data = await resposta.json();
     const reply = data.choices?.[0]?.message?.content || "Pulso IA ativo, mas resposta não veio.";
-
-    // Mostra resposta com formatação se necessário
-    responseDiv.textContent = "";
     responseDiv.innerHTML = reply.replace(/\n/g, "<br>");
-
     speak(reply);
   } catch (e) {
     console.error(e);
     responseDiv.innerHTML = "<strong>Erro na conexão simbólica com a IA.</strong> Verifique a chave ou a rede.";
   }
+}
 }
 
 function speak(text) {
