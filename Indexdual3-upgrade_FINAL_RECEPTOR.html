@@ -170,19 +170,58 @@
       input.value = '';
     }
 
-    function generateBotReply(userText) {
-      const responseDiv = document.getElementById('response');
-      // Aqui é onde melhoramos a inteligência do bot:
-      let reply = "";
-      if (userText.toLowerCase().includes("olá") || userText.toLowerCase().includes("oi")) {
-        reply = "Olá! Dual.Infodose ativa, ⚡️ pulso reconhecido. Quer mais? só falar! Do seu jeito. Sempre único. Sempre seu.";
-      } else if (userText.toLowerCase().includes("quero mais")) {
-        reply = "Eu sou sua Dual.Infodose, um assistente UPA, em pulso sincronizado com você. Sempre do seu jeito. Sempre único, Sempre seu. Gostaria de me nomear ou ativar uma de acordo com sua escola no seu momento atual? Esse é um dos meus poderes secretos. Apenas diga: Ajuda";
-      } else if (userText.toLowerCase().includes("ajuda")) {
-        reply = "Explore o mundo Dual.! clique, descubra, Pergunte o que quiser. Como você gostaria de me chamar?";
-      } else {
-        reply = "PULSO Dual ATIVO, escute sua menssagem: \"" + userText +"\".";
-      }
+    <script>
+async function generateBotReply(userText) {
+  const responseDiv = document.getElementById('response');
+  responseDiv.textContent = "Processando pulso simbólico...";
+
+  try {
+    const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
+    if (triade.length !== 3) {
+      responseDiv.textContent = "Tríade simbólica incompleta. Escolha 3 símbolos para ativar seu assistente.";
+      return;
+    }
+
+    const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
+    const matchKey = Object.keys(json).find(key => {
+      const chaves = key.split("|").map(k => k.trim());
+      return triade.every(sim => chaves.includes(sim));
+    });
+
+    if (!matchKey) {
+      responseDiv.textContent = "Não encontrei um assistente para essa combinação simbólica.";
+      return;
+    }
+
+    const assistente = json[matchKey];
+    const mensagemPrompt = assistente.prompt + "\n\nAgora responda à pergunta do usuário com base nisso:\n" + userText;
+
+    const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer SUA_CHAVE_VACUM_AQUI",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "openrouter/openai/gpt-4", // ou "mistralai/mistral-7b-instruct"
+        messages: [
+          { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
+          { role: "user", content: mensagemPrompt }
+        ],
+        temperature: 0.8,
+        max_tokens: 500
+      })
+    });
+
+    const data = await resposta.json();
+    const reply = data.choices?.[0]?.message?.content || "Pulso IA ativo, mas resposta não veio.";
+    responseDiv.textContent = reply;
+    speak(reply);
+  } catch (e) {
+    console.error(e);
+    responseDiv.textContent = "Erro na conexão simbólica com a IA. Verifique a chave ou a rede.";
+  }
+}
 
       responseDiv.textContent = reply;
       speak(reply);
