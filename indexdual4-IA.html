@@ -160,16 +160,44 @@ async function generateBotReply(userText) {
   responseDiv.textContent = "Processando pulso simbólico...";
 
   try {
-    const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
+    const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
+    let triadeAtivada = null;
+
+    // 1. Detecta ativação direta por comando
+    const ativacaoMatch = userText.match(/^Ativar TRIAD:\s*(.+)$/i);
+    if (ativacaoMatch) {
+      const triadeTexto = ativacaoMatch[1];
+      const triade = triadeTexto.split("|").map(s => s.trim());
+      if (triade.length === 3) {
+        localStorage.setItem("triade_ativa", JSON.stringify(triade));
+        responseDiv.textContent = `Tríade ativada: ${triade.join(" | ")}`;
+      } else {
+        responseDiv.textContent = "Formato inválido. Use: Ativar TRIAD: SIMBOLO1 | SIMBOLO2 | SIMBOLO3";
+      }
+      return;
+    }
+
+    // 2. Detecta ativação indireta por nome/frase/prompt
+    for (const key in json) {
+      const dados = json[key];
+      const valoresParaBuscar = [dados.nome, dados.frase, dados.prompt];
+      if (valoresParaBuscar.some(val => userText.includes(val))) {
+        triadeAtivada = key.split("|").map(k => k.trim());
+        localStorage.setItem("triade_ativa", JSON.stringify(triadeAtivada));
+        break;
+      }
+    }
+
+    // 3. Se ainda não tiver tríade ativa, tenta pegar do localStorage
+    const triade = triadeAtivada || JSON.parse(localStorage.getItem('triade_ativa') || '[]');
     if (triade.length !== 3) {
       responseDiv.textContent = "Tríade simbólica incompleta. Escolha 3 símbolos para ativar seu assistente.";
       return;
     }
 
-    const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
     const matchKey = Object.keys(json).find(key => {
-      const chaves = key.split("|").map(k => k.trim());
-      return triade.every(sim => chaves.includes(sim));
+      const chaves = key.split("|").map(k => k.trim().toLowerCase());
+      return triade.every(sim => chaves.includes(sim.toLowerCase()));
     });
 
     if (!matchKey) {
@@ -205,37 +233,6 @@ async function generateBotReply(userText) {
     console.error(e);
     responseDiv.textContent = "Erro na conexão simbólica com a IA. Verifique a chave ou a rede.";
   }
-}
-
-function speak(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'pt-BR';
-  utterance.pitch = 1.2;
-  utterance.rate = 1;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utterance);
-}
-
-function startVoice() {
-  if (!('webkitSpeechRecognition' in window)) {
-    alert('Reconhecimento de voz não suportado no seu navegador.');
-    return;
-  }
-  recognition = new webkitSpeechRecognition();
-  recognition.lang = 'pt-BR';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.start();
-
-  recognition.onresult = function(event) {
-    const transcript = event.results[0][0].transcript;
-    generateBotReply(transcript);
-  };
-
-  recognition.onerror = function(event) {
-    console.error('Erro no reconhecimento:', event.error);
-  };
 }
 </script>
 </body>
