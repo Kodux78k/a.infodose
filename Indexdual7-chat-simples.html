@@ -196,11 +196,11 @@ async function generateBotReply(userText) {
     });
 
     if (!resposta.ok) {
-      const erroTexto = await resposta.text();
-      console.error("Erro da API:", resposta.status, erroTexto);
-      responseDiv.textContent = "Erro da IA: " + resposta.statusText;
-      return;
-    }
+  const erroTexto = await resposta.text();
+  console.error("Erro da API:", resposta.status, erroTexto);
+  responseDiv.textContent = "Erro da IA: " + erroTexto; // Exibe a mensagem de erro da API
+  return;
+}
 
     const data = await resposta.json();
     console.log("Resposta da IA:", data);
