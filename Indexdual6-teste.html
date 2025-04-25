@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chat com múltiplos assistentes simbólicos</title>
+<style>
+  /* --- Variáveis de tema --- */
+  :root {
+    --bg-light: #f0f0f0;
+    --text-light: #222;
+    --bg-dark: #111;
+    --text-dark: #eee;
+    --primary: #00ffff;
+    --secondary: #ff00ff;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    background: var(--bg-light);
+    color: var(--text-light);
+    transition: background 0.3s, color 0.3s;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+
+  header {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 1.3em;
+    color: white;
+  }
+
+  .toggle-theme {
+    cursor: pointer;
+    font-weight: bold;
+    background: #222;
+    color: white;
+    border-radius: 4px;
+    padding: 5px 10px;
+  }
+
+  main {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Seletor de símbolos */
+  #symbol-selector {
+    margin-bottom: 15px;
+  }
+
+  #symbol-selector button {
+    margin: 3px;
+    padding: 8px 14px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    transition: background-color 0.3s;
+  }
+
+  #symbol-selector button.selected {
+    background: var(--primary);
+    color: black;
+    border-color: var(--secondary);
+  }
+
+  /* Caixa de chat */
+  #chat {
+    flex: 1;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    background: rgba(255 255 255 / 0.9);
+    color: black;
+  }
+
+  body.dark #chat {
+    background: rgba(0 0 0 / 0.8);
+    color: white;
+  }
+
+  .message {
+    margin-bottom: 12px;
+  }
+
+  .message.user {
+    text-align: right;
+    font-weight: bold;
+  }
+
+  .message.bot {
+    text-align: left;
+  }
+
+  form {
+    margin-top: 10px;
+    display: flex;
+  }
+
+  form input[type="text"] {
+    flex: 1;
+    font-size: 1.1em;
+    padding: 8px;
+    border-radius: 20px 0 0 20px;
+    border: 2px solid var(--primary);
+    border-right: none;
+    outline: none;
+  }
+
+  form button {
+    font-size: 1.2em;
+    background: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 0 20px 20px 0;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  form button:hover {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+  }
+
+  /* Info de assistente ativo */
+  #active-assistant {
+    margin-bottom: 10px;
+    font-style: italic;
+    text-align: center;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body class="light">
+<header>
+  <h1>Chat Simbólico Multi-IA</h1>
+  <div class="toggle-theme" id="toggleThemeBtn">Tema escuro</div>
+</header>
+
+<main>
+  <div id="symbol-selector">
+    <strong>Escolha 3 símbolos para ativar o assistente:</strong><br />
+    <!-- Botões para os símbolos -->
+    <button data-symbol="⚡">⚡</button>
+    <button data-symbol="🧠">🧠</button>
+    <button data-symbol="👁️">👁️</button>
+    <button data-symbol="🔵">🔵</button>
+    <button data-symbol="⚫️">⚫️</button>
+    <button data-symbol="🌟">🌟</button>
+    <button data-symbol="🔥">🔥</button>
+    <button data-symbol="❄️">❄️</button>
+  </div>
+
+  <div id="active-assistant">Assistente ativo: <span id="assistantName">Nenhum</span></div>
+
+  <div id="chat"></div>
+
+  <form id="chatForm">
+    <input id="userInput" type="text" placeholder="Digite sua mensagem..." autocomplete="off" />
+    <button type="submit">Enviar</button>
+  </form>
+</main>
+
+<script>
+  // --- Dados dos assistentes com combinações de símbolos ---
+  // Aqui simulamos 3 assistentes com diferentes tríades
+  const assistantsDB = {
+    "⚡|🧠|👁️": {
+      nome: "HORUS A.Infodose",
+      prompt: "Você é o assistente HORUS, sábio e visionário, respondendo poeticamente.",
+      respostas: [
+        "A visão que buscas está além do horizonte.",
+        "Pensamentos são pontes para a sabedoria eterna.",
+        "O pulso do cosmos vibra em sua pergunta."
+      ]
+    },
+    "🔵|⚫️|🌟": {
+      nome: "COBLUX A.Infodose",
+      prompt: "Você é o assistente COBLUX, misterioso e enigmático, respondendo com metáforas.",
+      respostas: [
+        "Nas sombras, a luz encontra seu significado.",
+        "O universo sussurra segredos ocultos.",
+        "Cada estrela guarda um mistério insondável."
+      ]
+    },
+    "🔥|❄️|⚡": {
+      nome: "KODUX A.Infodose",
+      prompt: "Você é o assistente KODUX, enérgico e vibrante, com respostas cheias de força.",
+      respostas: [
+        "O fogo arde, mas o gelo domina a calma interior.",
+        "A energia que pede é a força do universo.",
+        "Tempestades dançam na sinfonia do destino."
+      ]
+    }
+  };
+
+  // Estado interno
+  let selectedSymbols = [];
+  let activeAssistantKey = null;
+
+  // Elementos da DOM
+  const buttons = document.querySelectorAll("#symbol-selector button");
+  const assistantNameSpan = document.getElementById("assistantName");
+  const chatDiv = document.getElementById("chat");
+  const chatForm = document.getElementById("chatForm");
+  const userInput = document.getElementById("userInput");
+  const toggleThemeBtn = document.getElementById("toggleThemeBtn");
+
+  // --- Função para atualizar o assistente ativo com base na tríade ---
+  function updateActiveAssistant() {
+    if (selectedSymbols.length !== 3) {
+      activeAssistantKey = null;
+      assistantNameSpan.textContent = "Nenhum";
+      return;
+    }
+    // Ordena a tríade para buscar chave
+    const key = selectedSymbols.slice().sort().join("|");
+    if (assistantsDB[key]) {
+      activeAssistantKey = key;
+      assistantNameSpan.textContent = assistantsDB[key].nome;
+    } else {
+      activeAssistantKey = null;
+      assistantNameSpan.textContent = "Nenhum (combinação desconhecida)";
+    }
+  }
+
+  // --- Função para lidar com clique nos botões de símbolo ---
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      const symbol = button.getAttribute("data-symbol");
+
+      // Se já selecionado, desmarca
+      if (selectedSymbols.includes(symbol)) {
+        selectedSymbols = selectedSymbols.filter(s => s !== symbol);
+        button.classList.remove("selected");
+      } else {
+        if (selectedSymbols.length < 3) {
+          selectedSymbols.push(symbol);
+          button.classList.add("selected");
+        } else {
+          alert("Você só pode selecionar 3 símbolos.");
+        }
+      }
+      updateActiveAssistant();
+    });
+  });
+
+  // --- Função para adicionar mensagens ao chat ---
+  function addMessage(text, fromUser = true) {
+    const div = document.createElement("div");
+    div.className = "message " + (fromUser ? "user" : "bot");
+    div.textContent = text;
+    chatDiv.appendChild(div);
+    chatDiv.scrollTop = chatDiv.scrollHeight; // Scroll automático para baixo
+  }
+
+  // --- Função que "simula" resposta da IA ---
+  function generateReply(userText) {
+    if (!activeAssistantKey) {
+      addMessage("Por favor, selecione 3 símbolos válidos para ativar um assistente.", false);
+      return;
+    }
+    const assistant = assistantsDB[activeAssistantKey];
+    // Simula resposta selecionando uma frase aleatória
+    const randomIndex = Math.floor(Math.random() * assistant.respostas.length);
+    let reply = assistant.respostas[randomIndex];
+    // Resposta pode conter a mensagem do usuário embutida, aqui simplificado:
+    reply += ` (Responde à sua mensagem: "${userText}")`;
+    addMessage(reply, false);
+  }
+
+  // --- Evento de envio do formulário ---
+  chatForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const text = userInput.value.trim();
+    if (!text) return;
+    addMessage(text, true);
+    generateReply(text);
+    userInput.value = "";
+  });
+
+  // --- Toggle tema claro/escuro ---
+  toggleThemeBtn.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    if (document.body.classList.contains("dark")) {
+      toggleThemeBtn.textContent = "Tema claro";
+    } else {
+      toggleThemeBtn.textContent = "Tema escuro";
+    }
+  });
+</script>
+</body>
+</html>
