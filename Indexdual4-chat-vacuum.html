@@ -161,6 +161,8 @@ async function generateBotReply(userText) {
 
   try {
     const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
+    console.log("Tríade ativa:", triade);
+
     if (triade.length !== 3) {
       responseDiv.textContent = "Tríade simbólica incompleta. Escolha 3 símbolos para ativar seu assistente.";
       return;
@@ -171,6 +173,8 @@ async function generateBotReply(userText) {
       const chaves = key.split("|").map(k => k.trim());
       return triade.every(sim => chaves.includes(sim));
     });
+
+    console.log("Match encontrado:", matchKey);
 
     if (!matchKey) {
       responseDiv.textContent = "Não encontrei um assistente para essa combinação simbólica.";
@@ -197,45 +201,29 @@ async function generateBotReply(userText) {
       })
     });
 
+    if (!resposta.ok) {
+      const erroTexto = await resposta.text();
+      console.error("Erro da API:", resposta.status, erroTexto);
+      responseDiv.textContent = "Erro da IA: " + resposta.statusText;
+      return;
+    }
+
     const data = await resposta.json();
+    console.log("Resposta completa da IA:", data);
+
     const reply = data.choices?.[0]?.message?.content || "Pulso IA ativo, mas resposta não veio.";
     responseDiv.textContent = reply;
-    speak(reply);
+
+    try {
+      speak(reply);
+    } catch (e) {
+      console.warn("Erro ao tentar falar a resposta:", e);
+    }
+
   } catch (e) {
-    console.error(e);
+    console.error("Erro geral:", e);
     responseDiv.textContent = "Erro na conexão simbólica com a IA. Verifique a chave ou a rede.";
   }
-}
-
-function speak(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'pt-BR';
-  utterance.pitch = 1.2;
-  utterance.rate = 1;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utterance);
-}
-
-function startVoice() {
-  if (!('webkitSpeechRecognition' in window)) {
-    alert('Reconhecimento de voz não suportado no seu navegador.');
-    return;
-  }
-  recognition = new webkitSpeechRecognition();
-  recognition.lang = 'pt-BR';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.start();
-
-  recognition.onresult = function(event) {
-    const transcript = event.results[0][0].transcript;
-    generateBotReply(transcript);
-  };
-
-  recognition.onerror = function(event) {
-    console.error('Erro no reconhecimento:', event.error);
-  };
 }
 </script>
 </body>
