@@ -165,7 +165,7 @@ async function generateBotReply(userText) {
     const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
     let triadeAtivada = null;
 
-    // 1. Detecta ativação direta por comando
+    // 1. Detecta ativação direta por comando "Ativar TRIAD: SIMBOLO1 | SIMBOLO2 | SIMBOLO3"
     const ativacaoMatch = userText.match(/^Ativar TRIAD:\s*(.+)$/i);
     if (ativacaoMatch) {
       const triadeTexto = ativacaoMatch[1];
@@ -179,24 +179,25 @@ async function generateBotReply(userText) {
       return;
     }
 
-    // 2. Detecta ativação indireta por nome/frase/prompt
+    // 2. Detecta ativação indireta por nome, frase ou prompt
     for (const key in json) {
       const dados = json[key];
       const valoresParaBuscar = [dados.nome, dados.frase, dados.prompt];
-      if (valoresParaBuscar.some(val => userText.includes(val))) {
+      if (valoresParaBuscar.some(val => userText.toLowerCase().includes(val.toLowerCase()))) {
         triadeAtivada = key.split("|").map(k => k.trim());
         localStorage.setItem("triade_ativa", JSON.stringify(triadeAtivada));
         break;
       }
     }
 
-    // 3. Se ainda não tiver tríade ativa, tenta pegar do localStorage
+    // 3. Se não tiver tríade ativa, tenta pegar do localStorage
     const triade = triadeAtivada || JSON.parse(localStorage.getItem('triade_ativa') || '[]');
     if (triade.length !== 3) {
       responseDiv.textContent = "Tríade simbólica incompleta. Escolha 3 símbolos para ativar seu assistente.";
       return;
     }
 
+    // 4. Verifica se há uma correspondência entre os símbolos
     const matchKey = Object.keys(json).find(key => {
       const chaves = key.split("|").map(k => k.trim().toLowerCase());
       return triade.every(sim => chaves.includes(sim.toLowerCase()));
@@ -210,6 +211,7 @@ async function generateBotReply(userText) {
     const assistente = json[matchKey];
     const mensagemPrompt = assistente.prompt + "\n\nAgora responda à pergunta do usuário com base nisso:\n" + userText;
 
+    // 5. Envia a requisição para a IA
     const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -227,12 +229,27 @@ async function generateBotReply(userText) {
       })
     });
 
+    // Verifica se a requisição foi bem-sucedida
+    if (!resposta.ok) {
+      const erroTexto = await resposta.text();
+      console.error("Erro da API:", resposta.status, erroTexto);
+      responseDiv.textContent = "Erro da IA: " + resposta.statusText;
+      return;
+    }
+
     const data = await resposta.json();
+    console.log("Resposta completa da IA:", data);
+
     const reply = data.choices?.[0]?.message?.content || "Pulso IA ativo, mas resposta não veio.";
     responseDiv.textContent = reply;
-    speak(reply);
+
+    try {
+      speak(reply);
+    } catch (e) {
+      console.warn("Erro ao tentar falar a resposta:", e);
+    }
   } catch (e) {
-    console.error(e);
+    console.error("Erro geral:", e);
     responseDiv.textContent = "Erro na conexão simbólica com a IA. Verifique a chave ou a rede.";
   }
 }
