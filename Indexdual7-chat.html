@@ -217,7 +217,7 @@ async function generateBotReply(userText) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "openrouter/openai/gpt-4",
+        model: "vacuum:latest",
         messages: [
           { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
           { role: "user", content: mensagemPrompt }
