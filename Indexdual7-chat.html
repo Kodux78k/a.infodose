@@ -217,12 +217,12 @@ async function generateBotReply(userText) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "vacuum:latest",
+        model: "alenai/molmo-7b-fp16-hf",
         messages: [
           { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
           { role: "user", content: mensagemPrompt }
         ],
-        temperature: 0.8,
+        temperature: 1.8,
         max_tokens: 500
       })
     });
