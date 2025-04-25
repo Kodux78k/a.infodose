@@ -146,23 +146,7 @@
     }
     </script>
 
-}
 
-['slider-botoes', 'slider-particulas', 'slider-logo'].forEach(id => {
-  document.getElementById(id).addEventListener('input', ativarSimbolicoPulsoCosmico);
-});
-
-window.addEventListener('DOMContentLoaded', () => {
-  const ativo = localStorage.getItem('assistente_ativo');
-  if (ativo) {
-    const assistente = JSON.parse(ativo);
-    const pulso = document.getElementById('simbolo-pulso');
-    if (pulso) {
-      pulso.innerText = assistente.simbolos[0];
-      pulso.style.display = 'block';
-    }
-  }
-});
 </script>
 </body>
 </html>
