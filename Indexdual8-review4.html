@@ -212,7 +212,7 @@
       const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer SUA_API_KEY",
+          "Authorization": "Bearer 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",
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -221,8 +221,8 @@
             { role: "system", content: "Você é um assistente simbólico chamado " + assistente.nome + "." },
             { role: "user", content: promptFinal }
           ],
-          temperature: 1.0,
-          max_tokens: 500
+          temperature: 1.8,
+          max_tokens: 666
         })
       });
 
