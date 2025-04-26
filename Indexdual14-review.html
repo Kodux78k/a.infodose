@@ -182,24 +182,17 @@
           }
         }
 
-        const triade = triadeAtivada || JSON.parse(localStorage.getItem("triade_ativa") || "[]");
-        if (triade.length !== 3) {
-          responseDiv.textContent = "Tríade simbólica incompleta.";
-          return;
-        }
-
-        const matchKey = Object.keys(json).find(k => {
-          const chaves = k.toLowerCase().split("|").map(s => s.trim());
-          return triade.every(sim => chaves.includes(sim.toLowerCase()));
-        });
-
-        if (!matchKey) {
-          responseDiv.textContent = "Não encontrei um assistente para essa combinação.";
-          return;
-        }
-
-        const assistente = json[matchKey];
-        const promptFinal = assistente.frase + "\n\n" + userText;
+        window.addEventListener('message', async (event) => {
+  const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
+  if (triade.length === 3) {
+    try {
+      const res = await fetch('https://kodux78k.github.io/DualInfodose/data/metapulso_70_combinacoes.json');
+      const data = await res.json();
+      const assistente = data.find(item =>
+        triade.every(sim => item.simbolos.includes(sim))
+      );
+      if (assistente) {
+        const promptFinal = `Ative o assistente "${assistente.nome}" e responda de forma breve usando a seguinte energia simbólica: "${assistente.frase}". Mantenha o tom inspirador, cinematográfico, respeitando o livre arbítrio.`;
 
         const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
@@ -210,26 +203,32 @@
           body: JSON.stringify({
             model: "qwen/qwen2.5-vl-3b-instruct:free",
             messages: [
-              { role: "system", content: `Você é o assistente simbólico ${assistente.nome}.` },
+              { role: "system", content: "Você é um assistente simbólico chamado " + assistente.nome + "." },
               { role: "user", content: promptFinal }
             ],
-            temperature: 0.9,
+            temperature: 1,
             max_tokens: 500
           })
         });
 
-        const data = await resposta.json();
-        let reply = data.choices?.[0]?.message?.content || "Resposta vazia.";
+        const json = await resposta.json();
+        const botReply = json.choices?.[0]?.message?.content || `Ativando ${assistente.nome}. Energia vibracional recebida.`;
 
-        reply = reply.slice(0, 369); // limite de 369 caracteres
-        formatReply(reply, responseDiv);
-        speak(reply);
-        setTimeout(() => speak("Do seu jeito, sempre único, sempre seu."), 1000);
-        responseDiv.innerHTML += `<div class="final-frase">Do seu jeito, sempre único, sempre seu.</div>`;
-      } catch (err) {
-        console.error("Erro:", err);
-        responseDiv.textContent = "Erro na IA ou conexão.";
+        document.getElementById('response').textContent = botReply;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(botReply);
+        u.lang = 'pt-BR';
+        u.pitch = 1.1;
+        u.rate = 1;
+        window.speechSynthesis.speak(u);
+
+        localStorage.setItem('assistente_ativo', JSON.stringify(assistente));
       }
+    } catch (err) {
+      console.error('Erro ao ativar assistente pelo evento message:', err);
+    }
+  }
+});
     }
 
     function formatReply(text, container) {
