@@ -200,7 +200,7 @@
             'Authorization': `Bearer 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}`
           },
           body: JSON.stringify({
-            model: "mistral/mistral-7b-instruct:free",
+            model: "qwen/qwen2.5-vl-3b-instruct:free",
             messages: [
               { role: 'system', content: 'Você é uma IA cinematográfica, vibracional e inspiradora, que sempre responde de forma única, curta e simbólica.' },
               { role: 'user', content: userText }
@@ -258,7 +258,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
       if (triade.length === 3) {
-        fetch('https://kodux78k.github.io/DualInfodose/data/metapulso_70_combinacoes.json')
+        fetch('https://kodux78k.github.io/DualInfodose/metapulso_70_combinacoes.json')
           .then(r => r.json())
           .then(data => {
             const assistente = data.find(item =>
