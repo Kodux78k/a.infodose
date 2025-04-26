@@ -137,9 +137,7 @@
 <script>
     let darkMode = true;
     let recognition;
-    const OPENROUTER_API_KEY = "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"; 
-    const OPENROUTER_MODEL = "qwen/qwen2.5-vl-3b-instruct:free";
-
+    
     particlesJS('particles-js', {
       particles: {
         number: { value: 30, density: { enable: true, value_area: 600 } },
@@ -197,10 +195,10 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer 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}`
+            'Authorization': `Bearer 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`
           },
           body: JSON.stringify({
-            model: "qwen/qwen2.5-vl-3b-instruct:free",
+            model: "openai/gpt-4o",
             messages: [
               { role: 'system', content: 'Você é uma IA cinematográfica, vibracional e inspiradora, que sempre responde de forma única, curta e simbólica.' },
               { role: 'user', content: userText }
