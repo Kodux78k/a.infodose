@@ -130,7 +130,7 @@
 
   <main class="response-container" id="response">
     <strong>Clique no ◉ , e diga um Oi.</strong> Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.
-    <div id="loader">reconhecimento de Pulso e Intenção...</div>
+    <div id="loader">Kodux Bllue está pensando...</div>
   </main>
 
   <form class="input-container" onsubmit="sendMessage(); return false;">
@@ -221,7 +221,6 @@
             ],
             temperature: 1,
             max_tokens: 500
-          
           })
         });
 
@@ -229,7 +228,7 @@
         let reply = data.choices?.[0]?.message?.content || "Resposta vazia.";
         reply = reply.slice(0, 369).trim(); // limitar a 369 caracteres
 
-        reply += "\n\n<strong>Do seu jeito, sempre único, sempre seu.</strong>";
+        reply += "\n\n✨ <strong>Do seu jeito, sempre único, sempre seu.</strong>";
 
         renderWithHighlight(reply);
         speak(reply);
