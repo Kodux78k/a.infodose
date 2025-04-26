@@ -223,15 +223,6 @@ async function generateBotReply(userText) {
         temperature: 0.8,
         max_tokens: 500
       })
-    });
-
-    const data = await resposta.json();
-    const reply = data.choices?.[0]?.message?.content || "Pulso IA ativo, mas resposta não veio.";
-    responseDiv.textContent = reply;
-    speak(reply);
-  } catch (e) {
-    console.error(e);
-    responseDiv.textContent = "Erro na conexão simbólica com a IA. Verifique a chave ou a rede.";
   }
 }
 </script>
