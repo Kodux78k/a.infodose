@@ -229,7 +229,7 @@
         }
 
         const assistente = json[matchKey];
-        const promptFinal = `${assistente.frase}\n\nAgora responda a pergunta do usuário: ${userText}`;
+        const promptFinal = `Ative o assistente "${assistente.nome}" e responda de forma breve usando a seguinte energia simbólica: "${assistente.frase}". Mantenha o tom inspirador, cinematográfico, respeitando o livre arbítrio.`;
 
         const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
@@ -243,23 +243,29 @@
               { role: "system", content: "Você é um assistente simbólico chamado " + assistente.nome + "." },
               { role: "user", content: promptFinal }
             ],
-            temperature: 1.0,
+            temperature: 1,
             max_tokens: 500
           })
         });
 
-        const data = await resposta.json();
-        let reply = (data.choices?.[0]?.message?.content || "Resposta vazia.").slice(0, 369);
+        const json = await resposta.json();
+        const botReply = json.choices?.[0]?.message?.content || `Ativando ${assistente.nome}. Energia vibracional recebida.`;
 
-        reply += "\n\n➡ O fluxo pode continuar. Do seu jeito, sempre único, sempre seu.";
-        formatReply(reply, responseDiv);
-        speak(reply);
+        document.getElementById('response').textContent = botReply;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(botReply);
+        u.lang = 'pt-BR';
+        u.pitch = 1.1;
+        u.rate = 1;
+        window.speechSynthesis.speak(u);
 
-      } catch (e) {
-        console.error("Erro geral:", e);
-        responseDiv.textContent = "Erro ao acessar IA ou símbolo. Verifique conexão.";
+        localStorage.setItem('assistente_ativo', JSON.stringify(assistente));
       }
+    } catch (err) {
+      console.error('Erro ao ativar assistente pelo evento message:', err);
     }
+  }
+});
 
     function formatReply(text, container) {
       container.innerHTML = "";
