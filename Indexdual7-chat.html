@@ -161,55 +161,6 @@ async function generateBotReply(userText) {
   const responseDiv = document.getElementById('response');
   responseDiv.textContent = "Processando pulso simbólico...";
 
-  try {
-    const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
-    let triadeAtivada = null;
-
-    // 1. Detecta ativação direta por comando
-    const ativacaoMatch = userText.match(/^Ativar TRIAD:\s*(.+)$/i);
-    if (ativacaoMatch) {
-      const triadeTexto = ativacaoMatch[1];
-      const triade = triadeTexto.split("|").map(s => s.trim());
-      if (triade.length === 3) {
-        localStorage.setItem("triade_ativa", JSON.stringify(triade));
-        responseDiv.textContent = `Tríade ativada: ${triade.join(" | ")}`;
-      } else {
-        responseDiv.textContent = "Formato inválido. Use: Ativar TRIAD: SIMBOLO1 | SIMBOLO2 | SIMBOLO3";
-      }
-      return;
-    }
-
-    // 2. Detecta ativação indireta por nome/frase/prompt
-    for (const key in json) {
-      const dados = json[key];
-      const valoresParaBuscar = [dados.nome, dados.frase, dados.prompt];
-      if (valoresParaBuscar.some(val => userText.includes(val))) {
-        triadeAtivada = key.split("|").map(k => k.trim());
-        localStorage.setItem("triade_ativa", JSON.stringify(triadeAtivada));
-        break;
-      }
-    }
-
-    // 3. Se ainda não tiver tríade ativa, tenta pegar do localStorage
-    const triade = triadeAtivada || JSON.parse(localStorage.getItem('triade_ativa') || '[]');
-    if (triade.length !== 3) {
-      responseDiv.textContent = "Tríade simbólica incompleta. Escolha 3 símbolos para ativar seu assistente.";
-      return;
-    }
-
-    const matchKey = Object.keys(json).find(key => {
-      const chaves = key.split("|").map(k => k.trim().toLowerCase());
-      return triade.every(sim => chaves.includes(sim.toLowerCase()));
-    });
-
-    if (!matchKey) {
-      responseDiv.textContent = "Não encontrei um assistente para essa combinação simbólica.";
-      return;
-    }
-
-    const assistente = json[matchKey];
-    const mensagemPrompt = assistente.prompt + "\n\nAgora responda à pergunta do usuário com base nisso:\n" + userText;
-
     const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -224,17 +175,7 @@ async function generateBotReply(userText) {
         ],
         temperature: 0.8,
         max_tokens: 500
-      })
-    });
-
-    const data = await resposta.json();
-    const reply = data.choices?.[0]?.message?.content || "Pulso IA ativo, mas resposta não veio.";
-    responseDiv.textContent = reply;
-    speak(reply);
-  } catch (e) {
-    console.error(e);
-    responseDiv.textContent = "Erro na conexão simbólica com a IA. Verifique a chave ou a rede.";
-  }
+      }
 }
 </script>
 </body>
