@@ -197,10 +197,10 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENROUTER_API_KEY}`
+            'Authorization': `Bearer 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}`
           },
           body: JSON.stringify({
-            model: OPENROUTER_MODEL,
+            model: "mistral/mistral-7b-instruct:free",
             messages: [
               { role: 'system', content: 'Você é uma IA cinematográfica, vibracional e inspiradora, que sempre responde de forma única, curta e simbólica.' },
               { role: 'user', content: userText }
