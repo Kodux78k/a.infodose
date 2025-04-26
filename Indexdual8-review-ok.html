@@ -142,7 +142,6 @@
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
     let darkMode = true;
-    let recognition; // Declara a variável recognition
 
     particlesJS('particles-js', {
       particles: {
@@ -256,15 +255,9 @@
     }
 
     function speak(text) {
-      if (!window.speechSynthesis) {
-        console.error("Speech synthesis não está disponível no seu navegador.");
-        return;
-      }
+      if (!window.speechSynthesis) return;
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'pt-BR';
-      utter.onerror = function(event) {
-        console.error("Erro na síntese de fala:", event);
-      };
       speechSynthesis.speak(utter);
     }
 
@@ -274,9 +267,9 @@
         return;
       }
 
-      if (recognition) recognition.abort(); // Garantir que a variável está declarada
+      if (recognition) recognition.abort();
 
-      recognition = new webkitSpeechRecognition(); // Inicializa o reconhecimento
+      recognition = new webkitSpeechRecognition();
       recognition.lang = "pt-BR";
       recognition.continuous = false;
       recognition.interimResults = false;
