@@ -159,17 +159,41 @@ async function generateBotReply(userText) {
   const responseDiv = document.getElementById('response');
   responseDiv.textContent = "Processando pulso simbólico...";
 
- 
+  try {
+    const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
+    console.log("Tríade ativa:", triade);
+
+    if (triade.length !== 3) {
+      responseDiv.textContent = "Tríade simbólica incompleta. Escolha 3 símbolos para ativar seu assistente.";
+      return;
+    }
+
+    const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
+    const matchKey = Object.keys(json).find(key => {
+      const chaves = key.split("|").map(k => k.trim());
+      return triade.every(sim => chaves.includes(sim));
+    });
+
+    console.log("Match encontrado:", matchKey);
+
+    if (!matchKey) {
+      responseDiv.textContent = "Não encontrei um assistente para essa combinação simbólica.";
+      return;
+    }
+
+    const assistente = json[matchKey];
+    const mensagemPrompt = assistente.prompt + "\n\nAgora responda à pergunta do usuário com base nisso:\n" + userText;
+
     const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "qwen/qwen2.5-vl-3b-instruct:free",
+        model: "allenai/molmo-7b-d:free",
         messages: [
-          { role: "system", content: "Você é um assistente simbólico e poético Infodose " },
+          { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
           { role: "user", content: mensagemPrompt }
         ],
         temperature: 1.0,

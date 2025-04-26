@@ -252,6 +252,10 @@
       const respostaCompleta = data.choices?.[0]?.message?.content || "Resposta vazia.";
       console.log("Resposta da IA (completa):", respostaCompleta);
 
+      // Exibir e falar somente a frase vibracional
+      const fraseVibracional = assistente.frase;
+      responseDiv.textContent = fraseVibracional;
+      speak(fraseVibracional);
 
     } catch (e) {
       console.error("Erro geral:", e);

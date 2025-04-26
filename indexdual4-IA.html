@@ -211,11 +211,11 @@ async function generateBotReply(userText) {
     const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "qwen/qwen2.5-vl-3b-instruct:free",
+        model: "openrouter/openai/gpt-4",
         messages: [
           { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
           { role: "user", content: mensagemPrompt }
@@ -223,6 +223,15 @@ async function generateBotReply(userText) {
         temperature: 0.8,
         max_tokens: 500
       })
+    });
+
+    const data = await resposta.json();
+    const reply = data.choices?.[0]?.message?.content || "Pulso IA ativo, mas resposta não veio.";
+    responseDiv.textContent = reply;
+    speak(reply);
+  } catch (e) {
+    console.error(e);
+    responseDiv.textContent = "Erro na conexão simbólica com a IA. Verifique a chave ou a rede.";
   }
 }
 </script>

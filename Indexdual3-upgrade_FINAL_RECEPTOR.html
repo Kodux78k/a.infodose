@@ -199,11 +199,11 @@ async function generateBotReply(userText) {
     const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer SUA_CHAVE_VACUM_AQUI",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "mistral-7b-instruct", 
+        model: "openrouter/openai/gpt-4", // ou "mistralai/mistral-7b-instruct"
         messages: [
           { role: "system", content: "Você é um assistente simbólico e poético chamado " + assistente.nome + "." },
           { role: "user", content: mensagemPrompt }
@@ -262,7 +262,7 @@ async function generateBotReply(userText) {
     window.addEventListener('DOMContentLoaded', () => {
       const triade = JSON.parse(localStorage.getItem('triade_ativa') || '[]');
       if (triade.length === 3) {
-        fetch('https://kodux78k.github.io/DualInfodose/metapulso_70_combinacoes.json')
+        fetch('https://kodux78k.github.io/DualInfodose/data/metapulso_70_combinacoes.json')
           .then(r => r.json())
           .then(data => {
             const assistente = data.find(item =>
