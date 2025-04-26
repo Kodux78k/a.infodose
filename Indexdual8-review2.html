@@ -223,7 +223,7 @@
         const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": "Bearer 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",
+            "Authorization": "Bearer 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",
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
@@ -243,11 +243,6 @@
           responseDiv.textContent = "Erro da IA: " + resposta.statusText;
           return;
         }
-
-        const data = await resposta.json();
-        const reply = data.choices?.[0]?.message?.content || "Resposta vazia.";
-        responseDiv.textContent = reply;
-        speak(reply);
 
       } catch (e) {
         console.error("Erro geral:", e);
