@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kodux Bllue - Chat Cinematográfico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background-dark: linear-gradient(to bottom, #000000, #1a1a1a);
+      --text-dark: white;
+      --primary-color: #00ffff;
+      --secondary-color: #ff00ff;
+    }
+
+    body {
+      background: var(--background-dark);
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-dark);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    #particles-js {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .svg-container {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 160px;
+      height: 160px;
+      z-index: 1;
+    }
+
+    .svg-container object {
+      width: 100%;
+      height: 100%;
+    }
+
+    .response-container {
+      position: relative;
+      z-index: 1;
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      font-size: 1.1em;
+      text-align: left;
+      min-height: 100px;
+    }
+
+    .input-container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+      margin-top: 20px;
+    }
+
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 10px;
+      border: 2px solid var(--primary-color);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: inherit;
+      font-size: 1em;
+      outline: none;
+    }
+
+    button {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      color: white;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+
+    .highlight-word {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 2px 4px;
+      margin: 1px;
+      display: inline-block;
+      border-radius: 4px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .final-frase {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.1em;
+      color: #00ffff;
+      text-align: center;
+      letter-spacing: 2px;
+      animation: destaqueFinal 2s ease-in-out forwards;
+    }
+
+    @keyframes destaqueFinal {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="svg-container" aria-hidden="true">
+    <object data="3D_logo_Dual_Infodose_9.svg" type="image/svg+xml"></object>
+  </div>
+
+  <main class="response-container" id="response" role="region" aria-live="polite">
+    <strong>Clique no ◉ e diga um Oi.</strong> Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.
+  </main>
+
+  <form class="input-container" onsubmit="sendMessage(); return false;">
+    <input id="userInput" type="text" placeholder="Diga: 'oi, Dual'..." autocomplete="off" />
+    <button type="submit" aria-label="Enviar mensagem">➤</button>
+    <button type="button" onclick="startVoice()" aria-label="Ativar reconhecimento de voz">🎙️</button>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    let recognition;
+
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 40, density: { enable: true, value_area: 800 } },
+        color: { value: ['#00ffff', '#ff00ff'] },
+        shape: { type: 'circle' },
+        opacity: { value: 0.3 },
+        size: { value: 3 },
+        move: { enable: true, speed: 1.5 }
+      },
+      retina_detect: true
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+      generateBotReply(text);
+      input.value = '';
+    }
+
+    async function generateBotReply(userText) {
+      const responseDiv = document.getElementById('response');
+      responseDiv.innerHTML = "<em>Processando simbologia...</em>";
+
+      try {
+        const json = await fetch("metapulso_70_combinacoes.json").then(r => r.json());
+
+        let triadeAtivada = null;
+        for (const key in json) {
+          const dados = json[key];
+          const valores = [dados.nome, dados.frase, dados.prompt];
+          if (valores.some(v => userText.toLowerCase().includes(v.toLowerCase()))) {
+            triadeAtivada = key.split("|").map(k => k.trim());
+            localStorage.setItem("triade_ativa", JSON.stringify(triadeAtivada));
+            break;
+          }
+        }
+
+        const triade = triadeAtivada || JSON.parse(localStorage.getItem("triade_ativa") || "[]");
+        if (triade.length !== 3) {
+          responseDiv.textContent = "Tríade simbólica incompleta.";
+          return;
+        }
+
+        const matchKey = Object.keys(json).find(k => {
+          const chaves = k.toLowerCase().split("|").map(s => s.trim());
+          return triade.every(sim => chaves.includes(sim.toLowerCase()));
+        });
+
+        if (!matchKey) {
+          responseDiv.textContent = "Não encontrei um assistente para essa combinação.";
+          return;
+        }
+
+        const assistente = json[matchKey];
+        const promptFinal = assistente.frase + "\n\n" + userText;
+
+        const resposta = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer SUA_CHAVE_AQUI",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "qwen/qwen2.5-vl-3b-instruct:free",
+            messages: [
+              { role: "system", content: `Você é o assistente simbólico ${assistente.nome}.` },
+              { role: "user", content: promptFinal }
+            ],
+            temperature: 0.9,
+            max_tokens: 500
+          })
+        });
+
+        const data = await resposta.json();
+        let reply = data.choices?.[0]?.message?.content || "Resposta vazia.";
+
+        reply = reply.slice(0, 369); // limite de 369 caracteres
+        formatReply(reply, responseDiv);
+        speak(reply);
+        setTimeout(() => speak("Do seu jeito, sempre único, sempre seu."), 1000);
+        responseDiv.innerHTML += `<div class="final-frase">Do seu jeito, sempre único, sempre seu.</div>`;
+      } catch (err) {
+        console.error("Erro:", err);
+        responseDiv.textContent = "Erro na IA ou conexão.";
+      }
+    }
+
+    function formatReply(text, container) {
+      const words = text.split(" ");
+      container.innerHTML = "";
+      let line = "";
+      words.forEach((word, i) => {
+        line += `<span class="highlight-word">${word}</span> `;
+        if ((i + 1) % 7 === 0) {
+          container.innerHTML += `<p>${line.trim()}</p>`;
+          line = "";
+        }
+      });
+      if (line) container.innerHTML += `<p>${line.trim()}</p>`;
+    }
+
+    function speak(text) {
+      if (!window.speechSynthesis) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "pt-BR";
+      speechSynthesis.speak(utter);
+    }
+
+    function startVoice() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Reconhecimento de voz não suportado.");
+        return;
+      }
+
+      recognition = new webkitSpeechRecognition();
+      recognition.lang = "pt-BR";
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onresult = function (event) {
+        const texto = event.results[0][0].transcript;
+        document.getElementById('userInput').value = texto;
+        sendMessage();
+      };
+
+      recognition.onerror = function (event) {
+        console.error("Erro no reconhecimento:", event.error);
+      };
+
+      recognition.start();
+    }
+  </script>
+</body>
+</html>
