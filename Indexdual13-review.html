@@ -251,7 +251,7 @@
         const data = await resposta.json();
         let reply = (data.choices?.[0]?.message?.content || "Resposta vazia.").slice(0, 369);
 
-        reply += "\n\n➡Do seu jeito, sempre único, sempre seu.";
+        reply += "\n\n Do seu jeito, sempre único, sempre seu.";
         formatReply(reply, responseDiv);
         speak(reply);
 
@@ -269,7 +269,7 @@
       words.forEach((word, index) => {
         paragraph += `<span>${word}</span> `;
         if ((index + 1) % 10 === 0) {
-          container.innerHTML += paragraph + " ➡️<br><br>";
+          container.innerHTML += paragraph + " <br><br>";
           paragraph = "";
         }
       });
