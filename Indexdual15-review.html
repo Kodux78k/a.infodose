@@ -221,6 +221,7 @@
             ],
             temperature: 1,
             max_tokens: 500
+          
           })
         });
 
@@ -228,7 +229,7 @@
         let reply = data.choices?.[0]?.message?.content || "Resposta vazia.";
         reply = reply.slice(0, 369).trim(); // limitar a 369 caracteres
 
-        reply += "\n\n✨ <strong>Do seu jeito, sempre único, sempre seu.</strong>";
+        reply += "\n\n<strong>Do seu jeito, sempre único, sempre seu.</strong>";
 
         renderWithHighlight(reply);
         speak(reply);
