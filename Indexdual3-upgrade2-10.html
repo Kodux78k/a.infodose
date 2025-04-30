@@ -238,7 +238,37 @@
       speak(reply);
       renderPaginatedResponse(reply);
     }
+try {
+        responseDiv.textContent = "Pulso expandindo... IA Dual acessando...";
+        const completion = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer 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`
+          },
+          body: JSON.stringify({
+            model: "qwen/qwen3-1.7b:free",
+            messages: [
+              { role: 'system', content: 'Você é uma IA cinematográfica, vibracional e inspiradora, que sempre responde de forma única, curta e simbólica.' },
+              { role: 'user', content: userText }
+            ]
+          })
+        });
 
+        const data = await completion.json();
+        const botReply = data.choices[0].message.content.trim();
+        updateResponse(botReply);
+      } catch (error) {
+        console.error('Erro ao consultar OpenRouter:', error);
+        updateResponse("O pulso oscilou. Tente novamente!");
+      }
+    }
+
+    function updateResponse(text) {
+      const responseDiv = document.getElementById('response');
+      responseDiv.textContent = text;
+      speak(text);
+    }
     function speak(text) {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'pt-BR';
