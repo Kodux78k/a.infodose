@@ -167,16 +167,17 @@
     <div class="response-controls">
       <div style="display: flex; align-items: center;">
         <div class="copy-button" onclick="copyResponse()" title="Copiar resposta">
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-  <rect x="3" y="3" width="13" height="13" rx="2" ry="2"></rect>
-</svg>
+<svg class="icon" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" stroke="white" fill="none"/>
+    <rect x="6" y="6" width="12" height="12" stroke="white" fill="none"/>
+  </svg>
 </div>
         <div class="paste-button" onclick="pasteToInput()" title="Colar no campo de envio">
 <svg class="icon" viewBox="0 0 24 24">
-  <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2" fill="none"/>
-  <circle cx="12" cy="12" r="3" fill="limegreen"/>
-</svg>
+    <circle class="paste-icon-circle" cx="12" cy="12" r="10"/>
+    <line class="paste-icon-line" x1="12" y1="4" x2="12" y2="20"/>
+    <circle class="paste-icon-dot" cx="12" cy="12" r="2"/>
+  </svg>
 </div>
       </div>
       <div class="pagination">
