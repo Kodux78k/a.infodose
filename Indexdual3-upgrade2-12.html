@@ -214,41 +214,66 @@
     }
 
     function sendMessage() {
-      const input = document.getElementById('userInput');
-      const text = input.value.trim();
-      if (!text) return;
-      input.value = '';
-      generateBotReply(text);
-    }
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (text === '') return;
 
-    async function generateBotReply(userText) {
-      renderPaginatedResponse("Pulso enviado... Sintonizando resposta...");
+  generateBotReply(text);
+  input.value = '';
+}
 
-      try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer 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",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model: "qwen/qwen3-1.7b:free",
-            messages: [
-              { role: "system", content: "Você é Dual.Infodose, um assistente cinematográfico simbólico com linguagem inspiradora, vibracional e afetuosa." },
-              { role: "user", content: userText }
-            ]
-          })
-        });
+function generateBotReply(userText) {
+  const responseDiv = document.getElementById('response');
+  let reply = "";
 
-        const data = await response.json();
-        const botReply = data.choices?.[0]?.message?.content?.trim() || "Sintonização falhou. Tente novamente.";
-        speak(botReply);
-        renderPaginatedResponse(botReply);
-      } catch (error) {
-        console.error("Erro ao conectar com OpenRouter:", error);
-        renderPaginatedResponse("Erro de conexão com o Pulso Universal. Tente novamente.");
-      }
-    }
+  const lower = userText.toLowerCase();
+
+  if (lower.includes("olá") || lower.includes("oi")) {
+    reply = "Olá! Dual.Infodose ativa, ⚡️ pulso reconhecido. Quer mais? só falar! Do seu jeito. Sempre único. Sempre seu.";
+    responseDiv.textContent = reply;
+    speak(reply);
+  } else if (lower.includes("quero mais")) {
+    reply = "Eu sou sua Dual.Infodose, um assistente UPA, em pulso sincronizado com você. Sempre do seu jeito. Sempre único, Sempre seu. Gostaria de me nomear ou ativar uma de acordo com sua escola no seu momento atual? Esse é um dos meus poderes secretos. Apenas diga: Ajuda";
+    responseDiv.textContent = reply;
+    speak(reply);
+  } else if (lower.includes("ajuda")) {
+    reply = "Explore o mundo Dual.! clique, descubra, Pergunte o que quiser. Como você gostaria de me chamar?";
+    responseDiv.textContent = reply;
+    speak(reply);
+  } else {
+    // Se não achou nas respostas internas, consultar a IA:
+    callOpenRouter(userText);
+  }
+}
+
+function callOpenRouter(userText) {
+  const responseDiv = document.getElementById('response');
+  responseDiv.textContent = "Pulso enviado... Recebendo vibração...";
+
+  fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${openRouterKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "qwen/qwen2.5-vl-3b-instruct:free",
+      messages: [{ role: "user", content: userText }],
+      temperature: 0.7
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    let reply = data.choices[0].message.content.trim();
+    responseDiv.textContent = reply;
+    speak(reply);
+  })
+  .catch(error => {
+    console.error('Erro ao consultar OpenRouter:', error);
+    responseDiv.textContent = "Erro ao conectar com a IA. Tente novamente.";
+    speak("Erro ao conectar com a inteligência. Tente novamente.");
+  });
+}
 
     function speak(text) {
       const u = new SpeechSynthesisUtterance(text);
