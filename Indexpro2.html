@@ -1,0 +1,74 @@
+<!-- painel-kodux.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Profissões - KODUX</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #f2f2f2; margin: 0; padding: 20px; }
+    h1 { color: #00ffe0; text-align: center; }
+    .profissao { border: 1px solid #333; border-radius: 10px; padding: 15px; margin: 15px auto; max-width: 700px; background: #1c1c1c; box-shadow: 0 0 10px #00ffe050; }
+    .destaque { font-weight: bold; color: #ffd700; }
+    .formulario { margin: 20px auto; max-width: 700px; background: #141414; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #00ffe020; }
+    input { display: block; width: 100%; padding: 10px; margin: 10px 0; background: #2c2c2c; border: none; border-radius: 5px; color: #fff; }
+    button { background: #00ffe0; color: #000; font-weight: bold; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Painel de Profissões Emergentes - KODUX</h1>
+
+  <div class="formulario">
+    <h2>Registrar Nova Profissão</h2>
+    <input type="text" id="nome" placeholder="Nome da Profissão" />
+    <input type="text" id="criador" placeholder="Criador" />
+    <input type="text" id="dual" placeholder="Dual Infodose" />
+    <input type="text" id="arquetipo" placeholder="Arquétipo Dominante" />
+    <input type="text" id="nivel" placeholder="Nível" />
+    <input type="text" id="energia" placeholder="Energia (%)" />
+    <button onclick="registrarProfissao()">Validar Profissão</button>
+  </div>
+
+  <div id="painel"></div>
+
+  <script>
+    async function carregarProfissoes() {
+      const resposta = await fetch('http://localhost:4000/profissoes');
+      const profissoes = await resposta.json();
+      const painel = document.getElementById('painel');
+      painel.innerHTML = '';
+      profissoes.reverse().forEach(p => {
+        painel.innerHTML += `
+          <div class="profissao">
+            <p><span class="destaque">Profissão:</span> ${p.nome}</p>
+            <p><span class="destaque">Criador:</span> ${p.criador}</p>
+            <p><span class="destaque">Dual:</span> ${p.dual}</p>
+            <p><span class="destaque">Arquétipo:</span> ${p.arquetipo}</p>
+            <p><span class="destaque">Nível:</span> ${p.nivel}</p>
+            <p><span class="destaque">Energia:</span> ${p.energia}</p>
+          </div>
+        `;
+      });
+    }
+
+    async function registrarProfissao() {
+      const nova = {
+        nome: document.getElementById('nome').value,
+        criador: document.getElementById('criador').value,
+        dual: document.getElementById('dual').value,
+        arquetipo: document.getElementById('arquetipo').value,
+        nivel: document.getElementById('nivel').value,
+        energia: document.getElementById('energia').value
+      };
+      await fetch('http://localhost:4000/profissoes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nova)
+      });
+      alert('Profissão validada e registrada com sucesso!');
+      carregarProfissoes();
+    }
+
+    window.onload = carregarProfissoes;
+  </script>
+</body>
+</html>
