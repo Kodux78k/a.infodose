@@ -61,7 +61,7 @@
       background: rgba(0, 0, 0, 0.4);
       border-radius: 20px;
       min-height: 120px;
-      width: 85%;
+      width: 100%;
       max-width: 360px;
       font-size: 0.8em;
   }
@@ -116,7 +116,7 @@
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
-      width: 90%;
+      width: 100%;
       max-width: 500px;
     }
     input {
@@ -171,7 +171,7 @@
   border-radius: 10px;
   animation: fadeIn 0.8s ease forwards;
   transition: background 0.5s ease;
-    font-size: 0.8em; /* reduzido para melhor leitura em mobile */
+    font-size: 0.9em; /* reduzido para melhor leitura em mobile */
   line-height: 1.4em;
 }
 h3 {
@@ -326,16 +326,7 @@ function callOpenRouter(userText) {
     speak(errorMsg);
   });
 }
-// Ajusta tamanho do container com base no número de páginas
-function ajustarTamanhoContainer(pages) {
-  const container = document.querySelector('.response-container');
-  const baseWidth = 500; // largura padrão
-  const minWidth = 320;  // largura mínima
-  const ajuste = Math.min(pages.length * 30, 150); // máximo de redução
 
-  const novaLargura = baseWidth - ajuste;
-  container.style.maxWidth = `${Math.max(minWidth, novaLargura)}px`;
-}
     function renderPaginatedResponse(text) {
   const words = text.split(' ');
   const blockSize = Math.ceil(words.length / 3); // 3 blocos por página
