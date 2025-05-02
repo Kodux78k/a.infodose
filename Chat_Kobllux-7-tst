@@ -1,0 +1,39 @@
+@keyframes pulseBreath {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 40px var(--glow-color), inset 0 0 40px var(--glow-color);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 80px var(--glow-color), inset 0 0 80px var(--glow-color);
+  }
+}
+
+@keyframes blinkBeat {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+#camera.breathing {
+  animation: pulseBreath 4s ease-in-out infinite;
+}
+
+#batida-ritmica {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px;
+  border-radius: 50%;
+  background: var(--glow-color);
+  opacity: 0.4;
+  z-index: 2;
+  pointer-events: none;
+  animation: blinkBeat 1s ease-in-out infinite;
+  box-shadow: 0 0 20px var(--glow-color);
+}
