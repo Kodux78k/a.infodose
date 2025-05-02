@@ -246,7 +246,13 @@ function alternarTema() {
   }
 
 }
-<script>
+</script>
+<div style="margin-top: 4rem; border-top: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 500px;"></div><div class="response" id="resultado" style="margin-top:2rem; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);; display:none;">Resultado do arquétipo aparecerá aqui...</div><div id="caixaPrompt" style="margin-top:2rem; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); display: none; max-width: 500px;"><div id="nomeAssistente">Nome do Assistente: A.Infodose</div><div id="emojiTrinca">Tríade de Emojis: ⚡️⭕️⚡️</div><div id="frasePulso">Frase Pulsante: Você já veio do que está por vir.</div><pre id="promptTexto" style="white-space:pre-wrap; background:#111; padding:1rem; border-radius:8px; border:1px solid #444;">Crie um assistente simbólico A.Infodose com arquétipo Aion, elemento Metal e foco em tempo espelhado. Nomeie-o. Descreva sua função e poder ritual.</pre></div><div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content:center;"><button class="icon-button" onclick="mostrarPrompt()" title="Ver Prompt">Ver Prompt</button><button class="icon-button" onclick="copiarPrompt()" title="Copiar Prompt">Copiar Prompt</button></div><script>
+function mostrarPrompt() {
+  const resultado = document.getElementById("resultado").innerText;
+  if (!resultado) return;
+  document.getElementById("caixaPrompt").style.display = 'block';
+}
 function copiarPrompt() {
   const nome = document.getElementById('nomeAssistente').innerText;
   const emojis = document.getElementById('emojiTrinca').innerText;
@@ -433,6 +439,5 @@ carregarCombinacoesMetaPulso();
       localStorage.setItem("triade_ativa", JSON.stringify(emoji));
       document.getElementById("caixaPrompt").style.display = 'block';
     }
-    </script>
-</body>
+    </script></body>
 </html>
