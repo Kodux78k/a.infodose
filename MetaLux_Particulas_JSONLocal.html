@@ -71,7 +71,6 @@
     }
 
     
-
     .icon-button {
       background: none;
       border: none;
@@ -168,27 +167,11 @@
 </head>
 <body>
 <div id="particles-js"></div>
-<div id="toggleTema" onclick="alternarTema()" style="
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 999;
-  border: 1px solid rgba(255,255,255,0.2);
-">
+
 <svg height="24" viewbox="0 0 100 100" width="24">
 <path d="M50,50 m-20,0 a20,20 0 1,1 40,0 a20,20 0 1,1 -40,0" fill="none" stroke="var(--icon-fill)" stroke-width="3"></path>
 </svg>
-
+</div><div class="circle-wrapper" onclick="gerarIntencaoPulso()">
 <div class="pulse-shadow"></div>
 <div class="circle"></div>
 </div><div class="input-circles" style="display: flex; flex-direction: row; justify-content: center; gap: 2rem; margin: 1.5rem 0; flex-wrap: wrap;">
@@ -202,12 +185,7 @@
 <div class="circle-button" onclick="toggleDropdown('elemento')">ø</div>
 </div>
 </div>
-<div class="input-box">
-<input id="userInput" placeholder="Intenção simbólica..." type="text"/>
 
-</div>
-<div class="response" id="respostaBox">Estou aqui. No centro do pulso.</div>
-<div class="espiral" onclick="gerarIntencaoPulso()">
 <svg height="40" viewbox="0 0 100 100" width="40">
 <path d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0" fill="none" stroke="var(--icon-fill)" stroke-width="3"></path>
 </svg>
@@ -455,20 +433,5 @@ carregarCombinacoesMetaPulso();
       document.getElementById("caixaPrompt").style.display = 'block';
     }
     </script>
-    
-window.addEventListener('DOMContentLoaded', () => {
-  const ativo = localStorage.getItem('assistente_ativo');
-  if (ativo) {
-    const assistente = JSON.parse(ativo);
-    const pulso = document.getElementById('simbolo-pulso');
-    if (pulso) {
-      pulso.innerText = assistente.simbolos[0];
-      pulso.style.display = 'block';
-    }
-    const resp = document.getElementById("respostaBox");
-    if (resp) resp.innerText = `Ativo: ${assistente.nome} — “${assistente.frase}”`;
-  }
-});
-</script>
 </body>
 </html>
