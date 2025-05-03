@@ -7,6 +7,13 @@
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#000000",
+  "permissions": ["storage"],
+      "background": {
+      "service_worker": "app.js"
+    },
+      "action": {
+      "default_popup": "index_menu.html"
+  }
   "icons": [
     {
       "src": "icon192.png",
@@ -18,12 +25,7 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]}
-      "permissions": ["storage"],
-      "background": {
-      "service_worker": "js/app.js"
-    },
-      "action": {
-      "default_popup": "index_menu.html"
-  }
+  ]
+}
+      
 
