@@ -267,8 +267,8 @@
   position: fixed;
   top: 10px;
   left: 10px;
-  width: 30px;
-  height: 30px;
+  width: 10px;
+  height: 10px;
   background: rgba(255,255,255,0.05);
   border: none;
   border-radius: 50%;
@@ -329,7 +329,7 @@ function ativarSimbolicoSplash() {
 
   const simbolos = gerarSimbolos(botoes, particulas, logo);
 
-  fetch("https://kodux78k.github.io/DualInfodose/data/metapulso_70_combinacoes.json")
+  fetch("https://kodux78k.github.io/DualInfodose/main/metapulso_70_combinacoes.json")
     .then(r => r.json())
     .then(data => {
       const match = Object.values(data).find(item =>
