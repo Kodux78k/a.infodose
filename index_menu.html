@@ -246,6 +246,20 @@
       document.body.style.background = temaSalvo;
     }
   });
+  <script>
+  // No iframe (menu)
+const config = JSON.parse(localStorage.getItem('configuracaoAssistente'));
+
+fetch('/api/ativar-assistente', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ prompt: config.prompt })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Assistente ativado:', data);
+});
+
 </script>
 </body>
 </html>
