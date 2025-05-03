@@ -439,5 +439,66 @@ carregarCombinacoesMetaPulso();
       localStorage.setItem("triade_ativa", JSON.stringify(emoji));
       document.getElementById("caixaPrompt").style.display = 'block';
     }
-    </script></body>
+    </script>
+<script>
+  // 1️⃣ Ao carregar a página, busca o JSON de combinações e armazena no localStorage
+  document.addEventListener('DOMContentLoaded', () => {
+    carregarCombinacoesMetaPulso();
+    carregarUltimaConfiguracao();
+  });
+
+  async function carregarCombinacoesMetaPulso() {
+    // só faz fetch se ainda não existir no localStorage
+    if (localStorage.getItem('combinacoesMetaPulso')) return;
+    try {
+      const response = await fetch("assistente/combinacoes70.json");
+      const data = await response.json();
+      localStorage.setItem('combinacoesMetaPulso', JSON.stringify(data));
+      console.log("70 combinações carregadas e salvas.");
+    } catch (error) {
+      console.error("Erro ao carregar o JSON de combinações:", error);
+    }
+  }
+
+  // 2️⃣ Carrega a última configuração do assistente
+  function carregarUltimaConfiguracao() {
+    const saved = localStorage.getItem("assistente_ativo");
+    if (!saved) return;
+    const { nome, simbolos, frase, prompt } = JSON.parse(saved);
+
+    document.getElementById('nomeAssistente').innerText = nome;
+    document.getElementById('emojiTrinca').innerText = simbolos.join(' ');
+    document.getElementById('frasePulso').innerText = frase;
+    document.getElementById('promptTexto').innerText = prompt;
+    document.getElementById("caixaPrompt").style.display = 'block';
+  }
+
+  // 3️⃣ Sempre que gerar um ritual, salva a configuração atual
+  const ritualOrig = gerarRitual;
+  gerarRitual = function() {
+    ritualOrig();
+    const nome = document.getElementById('nomeAssistente').innerText;
+    const simbolos = document.getElementById('emojiTrinca').innerText.trim().split(/\s+/);
+    const frase = document.getElementById('frasePulso').innerText;
+    const prompt = document.getElementById('promptTexto').innerText;
+    localStorage.setItem("assistente_ativo",
+      JSON.stringify({ nome, simbolos, frase, prompt })
+    );
+  };
+
+  // 4️⃣ Ao clicar em "Ver Prompt", também garante que salvou
+  const mostrarOrig = mostrarPrompt;
+  mostrarPrompt = function() {
+    mostrarOrig();
+    // redundante mas reforça o save caso não tenha gerado ritual
+    const nome = document.getElementById('nomeAssistente').innerText;
+    const simbolos = document.getElementById('emojiTrinca').innerText.trim().split(/\s+/);
+    const frase = document.getElementById('frasePulso').innerText;
+    const prompt = document.getElementById('promptTexto').innerText;
+    localStorage.setItem("assistente_ativo",
+      JSON.stringify({ nome, simbolos, frase, prompt })
+    );
+  };
+</script>
+</body>
 </html>
