@@ -1,5 +1,5 @@
 {
-  "name": "Infodose KODUX",
+  "name": "a.Dual.Infodose KODUX",
   "short_name": "Infodose",
   "description": "Sistema simbólico cósmico com arquétipos pulsantes e ativação tríade.",
   "start_url": "splash.html",
@@ -19,7 +19,6 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]
-}
+  ]}
       
 
