@@ -2,7 +2,7 @@
 
 async function carregarCombinacoes() {
   try {
-    const resposta = await fetch('https://raw.githubusercontent.com/seu-usuario/a.Infodose/main/Metapulso_70_combinacoes.json');
+    const resposta = await fetch('https://raw.githubusercontent.com/Kodux78k/a.Infodose/main/metapulso_70_combinacoes.json');
     const combinacoes = await resposta.json();
     localStorage.setItem('combinacoesAssistente', JSON.stringify(combinacoes));
     console.log('Combinações carregadas com sucesso!');
