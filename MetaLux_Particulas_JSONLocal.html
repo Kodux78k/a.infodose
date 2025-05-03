@@ -451,7 +451,7 @@ carregarCombinacoesMetaPulso();
     // só faz fetch se ainda não existir no localStorage
     if (localStorage.getItem('combinacoesMetaPulso')) return;
     try {
-      const response = await fetch("assistente/combinacoes70.json");
+      const response = await fetch("Metapulso_70_combinacoes.json");
       const data = await response.json();
       localStorage.setItem('combinacoesMetaPulso', JSON.stringify(data));
       console.log("70 combinações carregadas e salvas.");
