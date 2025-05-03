@@ -599,8 +599,11 @@ function falar(frase) {
   utterance.lang = 'pt-BR'; // Define o idioma da fala (português)
   speechSynthesis.speak(utterance);
 }
+const configuracao = obterConfiguracaoAssistente();
+if (configuracao) {
+  // Prosseguir com o uso da configuração
 }
-    particlesJS('particles-js', {
+      particlesJS('particles-js', {
       particles: {
         number: { value: 30, density: { enable: true, value_area: 600 } },
         color: { value: ['#00ffff', '#ff00ff'] },
@@ -611,6 +614,7 @@ function falar(frase) {
       },
       retina_detect: true
     });
+    }
   </script>
 </body>
 </html>
