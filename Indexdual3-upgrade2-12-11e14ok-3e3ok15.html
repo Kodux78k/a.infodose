@@ -64,7 +64,7 @@
       max-height: 600px;
       width: 100%;
       max-width: 360px;
-      font-size: 1.1em;
+      font-size: 1.0em;
       overflow-y: auto;
   }
 
@@ -98,7 +98,7 @@
       justify-content: center;
     }
     .assist-button:hover {
-      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.15);
     }
     .assist-icon {
       width: 36px;
@@ -146,7 +146,7 @@
       gap: 10px;
       margin-bottom: 20px;
       width: 100%;
-      max-width: 500px;
+      max-width: 336px;
     }
     input {
       flex-grow: 1;
@@ -256,11 +256,11 @@ h3 {
 <div class="assist-button" id="assistente-button" title="Ativar Assistente">
   <svg viewBox="0 0 100 100" class="assist-icon">
     <!-- Quadrado -->
-    <rect x="10" y="10" width="80" height="80" stroke="white" fill="none" stroke-width="4"/>
+    <rect x="10" y="10" width="80" height="80" stroke="white" fill="none" stroke-width="1"/>
     <!-- Triângulo -->
-    <polygon points="50,20 80,80 20,80" stroke="white" fill="none" stroke-width="4"/>
+    <polygon points="50,20 80,80 20,80" stroke="white" fill="none" stroke-width="1"/>
     <!-- Círculo externo -->
-    <circle cx="50" cy="60" r="12" stroke="white" fill="none" stroke-width="4"/>
+    <circle cx="50" cy="60" r="12" stroke="white" fill="none" stroke-width="2"/>
     <!-- Círculo interno que aparece ao ativar -->
     <circle id="assistente-indicador" cx="50" cy="60" r="8" fill="green" opacity="0"/>
   </svg>
@@ -639,18 +639,8 @@ function falar(frase) {
   utterance.lang = 'pt-BR'; // Define o idioma da fala (português)
   speechSynthesis.speak(utterance);
 }
-    particlesJS('particles-js', {
-      particles: {
-        number: { value: 30, density: { enable: true, value_area: 600 } },
-        color: { value: ['#00ffff', '#ff00ff'] },
-        shape: { type: 'circle' },
-        opacity: { value: 0.4, random: true },
-        size: { value: 3, random: true },
-        move: { enable: true, speed: 1.2, direction: 'none', out_mode: 'out' }
-      },
-      retina_detect: true
-    });
-    }
+    
+    
     // Estado global
 let assistenteAtivo = localStorage.getItem('assistente_ativado') === 'true';
 
@@ -708,6 +698,17 @@ Descrição: ${configuracaoAssistente.descricao || 'Assistente contínuo com mem
     return false;
   }
 }
+particlesJS('particles-js', {
+      particles: {
+        number: { value: 30, density: { enable: true, value_area: 600 } },
+        color: { value: ['#00ffff', '#ff00ff'] },
+        shape: { type: 'circle' },
+        opacity: { value: 0.4, random: true },
+        size: { value: 3, random: true },
+        move: { enable: true, speed: 1.2, direction: 'none', out_mode: 'out' }
+      },
+      retina_detect: true
+    });
   </script>
 </body>
 </html>
