@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>dual.Infodose Chat Cinematográfico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: linear-gradient(to bottom, #000, #1a1a1a);
+      --text-color: #fff;
+      --transition-fast: 0.3s ease;
+      --transition-slow: 0.6s ease-in-out;
+      --primary: #111;
+      --secondary: #5e5c5e;
+      --blur-bg: rgba(0, 0, 0, 0.4);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-color);
+      background: var(--bg-dark);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    main {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 20px;
+    }
+    /* Partículas de fundo */
+    #particles-js {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    /* Logo SVG pulsante */
+    .logo {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 160px;
+      height: 160px;
+      animation: pulse 2s infinite;
+      z-index: 1;
+    }
+    @keyframes pulse {
+      0%,100% { transform: translate(-50%,-50%) scale(1); }
+      50%      { transform: translate(-50%,-50%) scale(1.05); }
+    }
+    /* Container das respostas */
+    .response-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 360px;
+      max-height: 600px;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: var(--blur-bg);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      overflow-y: auto;
+      transition: all var(--transition-slow);
+    }
+    .response-container[aria-live] { outline: none; }
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity var(--transition-slow);
+    }
+    .page.active {
+      display: block;
+      opacity: 1;
+    }
+    .response-block {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      animation: fadeIn var(--transition-slow) forwards;
+      line-height: 1.4;
+      transition: background var(--transition-fast);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .response-block.intro {
+      background: linear-gradient(135deg, rgba(0,255,255,0.2), rgba(0,100,100,0.1));
+      border-left: 4px solid #00ffff;
+    }
+    .response-block.middle {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(50,50,50,0.1));
+      border-left: 4px solid #ffffff66;
+    }
+    .response-block.ending {
+      background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(100,0,100,0.1));
+      border-left: 4px solid #ff00ff;
+    }
+    .response-block:hover {
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+    /* Controles de cópia, colar e paginação */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .controls button {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: transform var(--transition-fast);
+    }
+    .controls button:hover {
+      transform: scale(1.1);
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9em;
+    }
+    /* Campo de entrada e botões */
+    .input-container {
+      z-index: 1;
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 40px;
+    }
+    .input-container input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1em;
+      background: rgba(255,255,255,0.1);
+      color: inherit;
+      outline: none;
+      transition: background var(--transition-fast);
+    }
+    .input-container input:focus {
+      background: rgba(255,255,255,0.2);
+    }
+    .input-container button {
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: #fff;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+      transition: transform var(--transition-fast);
+    }
+    .input-container button:hover {
+      transform: scale(1.05);
+    }
+    .input-container object {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="particles-js"></div>
+
+    <div class="logo">
+      <object data="3D_logo_Dual_Infodose_9.svg" type="image/svg+xml"></object>
+    </div>
+
+    <section class="response-container" id="response" aria-live="polite" tabindex="-1">
+      <!-- Páginas geradas dinamicamente -->
+      <div class="page active">
+        <strong>clique no ◉ , e diga um Oi.</strong> Do seu jeito. <strong>Sempre único.</strong> <strong>Sempre seu.</strong>
+      </div>
+      <div class="controls">
+        <div>
+          <button id="copyBtn" aria-label="Copiar resposta">📋</button>
+          <button id="pasteBtn" aria-label="Colar no campo">📥</button>
+        </div>
+        <div class="pagination">
+          <button id="prevPage" aria-label="Página anterior">◀</button>
+          <span id="pageIndicator">1 / 1</span>
+          <button id="nextPage" aria-label="Próxima página">▶</button>
+        </div>
+      </div>
+    </section>
+
+    <form class="input-container" onsubmit="sendMessage(); return false;">
+      <input id="userInput" type="text" autocomplete="off" placeholder="Diga: 'oi, Dual'..." />
+      <button type="submit" aria-label="Enviar">➤</button>
+      <button type="button" id="voiceBtn" aria-label="Iniciar reconhecimento de voz">
+        <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
+      </button>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script defer>
+    // Estado compartilhado
+    const state = {
+      pages: [],
+      currentPage: 0,
+      assistenteAtivo: false,
+      config: {}
+    };
+
+    // Seleções DOM
+    const dom = {
+      response: document.getElementById('response'),
+      input: document.getElementById('userInput'),
+      copyBtn: document.getElementById('copyBtn'),
+      pasteBtn: document.getElementById('pasteBtn'),
+      prevPage: document.getElementById('prevPage'),
+      nextPage: document.getElementById('nextPage'),
+      pageIndicator: document.getElementById('pageIndicator'),
+      voiceBtn: document.getElementById('voiceBtn')
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupEventListeners();
+      initParticles();
+      carregarConfig();
+    });
+
+    function setupEventListeners() {
+      dom.copyBtn.addEventListener('click', copyResponse);
+      dom.pasteBtn.addEventListener('click', pasteToInput);
+      dom.prevPage.addEventListener('click', () => changePage(-1));
+      dom.nextPage.addEventListener('click', () => changePage(1));
+      dom.voiceBtn.addEventListener('click', startVoice);
+    }
+
+    function initParticles() {
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 30, density: { enable: true, value_area: 600 } },
+          color: { value: ['#00ffff', '#ff00ff'] },
+          shape: { type: 'circle' },
+          opacity: { value: 0.4, random: true },
+          size: { value: 3, random: true },
+          move: { enable: true, speed: 1.2, direction: 'none', out_mode: 'out' }
+        },
+        retina_detect: true
+      });
+    }
+
+    function sendMessage() {
+      const text = dom.input.value.trim();
+      if (!text) return;
+      dom.input.value = '';
+      generateBotReply(text);
+    }
+
+    function generateBotReply(userText) {
+      const lower = userText.toLowerCase();
+      verificarAtivacao(userText);
+
+      if (/(olá|oi)/.test(lower)) {
+        respond("Olá! Dual.Infodose ativa, ⚡️ pulso reconhecido. Quer mais? só falar!");
+      } else if (lower.includes("quero mais")) {
+        respond("Eu sou sua Dual.Infodose, um assistente UPA, em pulso sincronizado com você. Sempre do seu jeito. Sempre único, Sempre seu. Diga: Ajuda");
+      } else if (lower.includes("ajuda")) {
+        respond("Explore o mundo Dual.! clique, descubra, Pergunte o que quiser. Como você gostaria de me chamar?");
+      } else {
+        callOpenRouter(userText);
+      }
+    }
+
+    function verificarAtivacao(text) {
+      const m = text.match(/Nome do Assistente:\s*(.+)[\r\n]+Tríade de Emojis:\s*(.+)[\r\n]+Frase Pulsante:\s*(.+)[\r\n]+([\s\S]+)/i);
+      if (m) {
+        state.assistenteAtivo = true;
+        state.config = { nome: m[1].trim(), emojis: m[2].trim(), frase: m[3].trim(), descricao: m[4].trim() };
+        localStorage.setItem('config', JSON.stringify(state.config));
+      }
+    }
+
+    function respond(text) {
+      renderPages(text);
+      speak(text);
+    }
+
+    async function callOpenRouter(userText) {
+      respond("Pulso enviado... Recebendo vibração...");
+      let contexto = userText;
+      if (state.assistenteAtivo) {
+        const c = state.config;
+        contexto = `Nome do Assistente: ${c.nome}\nTríade de Emojis: ${c.emojis}\nFrase Pulsante: ${c.frase}\nDescrição: ${c.descricao}\nMensagem: ${userText}`;
+      }
+      try {
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer sk-or-…<sua-chave>",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ model: "qwen/qwen2.5-vl-3b-instruct:free", messages:[{role:"user",content:contexto}], temperature:0.7 })
+        });
+        const data = await res.json();
+        respond(data.choices[0].message.content.trim());
+      } catch {
+        respond("Erro ao conectar com a IA. Tente novamente.");
+      }
+    }
+
+    function renderPages(text) {
+      const words = text.split(' ');
+      const blockSize = Math.ceil(words.length / 3);
+      state.pages = [];
+      for (let i = 0; i < words.length; i += blockSize) {
+        state.pages.push(words.slice(i, i + blockSize).join(' '));
+      }
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const container = dom.response;
+      container.querySelectorAll('.page').forEach(el => el.remove());
+      state.pages.forEach((block, i) => {
+        const page = document.createElement('div');
+        page.className = 'page' + (i === 0 ? ' active' : '');
+        page.innerHTML = `
+          <div class="response-block intro"><h3>🎁</h3><p>${highlight(block)}</p></div>
+        `;
+        container.insertBefore(page, container.querySelector('.controls'));
+      });
+      state.currentPage = 0;
+      dom.pageIndicator.textContent = `1 / ${state.pages.length}`;
+    }
+
+    function changePage(offset) {
+      const n = state.currentPage + offset;
+      if (n < 0 || n >= state.pages.length) return;
+      const pages = dom.response.querySelectorAll('.page');
+      pages[state.currentPage].classList.remove('active');
+      pages[n].classList.add('active');
+      state.currentPage = n;
+      dom.pageIndicator.textContent = `${n+1} / ${state.pages.length}`;
+    }
+
+    function highlight(text) {
+      return text.split(' ').map(w => `<span style="letter-spacing:0.5px">${w}</span>`).join(' ');
+    }
+
+    function speak(text) {
+      const utter = new SpeechSynthesisUtterance(text + " Do seu jeito, sempre único, sempre seu.");
+      utter.lang = 'pt-BR';
+      speechSynthesis.speak(utter);
+    }
+
+    function copyResponse() {
+      const active = dom.response.querySelector('.page.active');
+      if (active) navigator.clipboard.writeText(active.innerText);
+    }
+
+    async function pasteToInput() {
+      try {
+        dom.input.value = await navigator.clipboard.readText();
+      } catch {}
+    }
+
+    function startVoice() {
+      const R = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
+      R.lang = 'pt-BR'; R.start();
+      R.onresult = e => { dom.input.value = e.results[0][0].transcript; sendMessage(); };
+    }
+
+    function carregarConfig() {
+      const cfg = localStorage.getItem('config');
+      if (cfg) { state.config = JSON.parse(cfg); state.assistenteAtivo = true; }
+    }
+  </script>
+</body>
+</html>
