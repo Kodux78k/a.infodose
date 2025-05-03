@@ -76,7 +76,7 @@
       padding-top: 10px;
       border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
-    .copy-button, .paste-button, .assist-button {
+    .copy-button, .paste-button {
       cursor: pointer;
       padding: 6px;
       border-radius: 6px;
@@ -84,22 +84,35 @@
       transition: background 0.3s;
       margin-right: 10px;
     }
-    .copy-button:hover, .paste-button, .assist-button:hover {
+    .copy-button:hover, .paste-button:hover {
       background: rgba(255, 255, 255, 0.15);
     }
-    .assist-icon
+    .assist-button {
+      cursor: pointer;
+      padding: 6px;
+      margin-right: 10px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .assist-button:hover {
+      transform: scale(1.1);
+    }
+    .assist-icon {
       width: 36px;
       height: 36px;
     }
+    /* animação de “pulsar” quando ativo */
     @keyframes pulse-green {
-  0%   { transform: scale(1);   opacity: 1; }
-  50%  { transform: scale(1.2); opacity: 0.7; }
-  100% { transform: scale(1);   opacity: 1; }
-}
-.assist-active #assistente-indicador {
-  animation: pulse-green 1s infinite ease-in-out;
-  opacity: 1 !important;
-}
+      0%   { transform: scale(1);   opacity: 1; }
+      50%  { transform: scale(1.2); opacity: 0.7; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+    .assist-active #assistente-indicador {
+      animation: pulse-green 1s infinite ease-in-out;
+      opacity: 1 !important;
+    }
     .pagination {
       display: flex;
       align-items: center;
@@ -129,8 +142,8 @@
       position: relative;
       z-index: 1;
       display: flex;
-      gap: 5px;
-      margin-bottom: 5px;
+      gap: 15px;
+      margin-bottom: 40px;
       width: 100%;
       max-width: 500px;
     }
