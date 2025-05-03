@@ -2,7 +2,7 @@
   "name": "Infodose KODUX",
   "short_name": "Infodose",
   "description": "Sistema simbólico cósmico com arquétipos pulsantes e ativação tríade.",
-  "start_url": "splash_FINAL.html",
+  "start_url": "splash.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
@@ -12,7 +12,7 @@
       "service_worker": "app.js"
     },
       "action": {
-      "default_popup": "index_menu.html"
+      "default_popup": "index.html"
   }
   "icons": [
     {
