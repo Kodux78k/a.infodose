@@ -250,7 +250,7 @@
   // No iframe (menu)
 const config = JSON.parse(localStorage.getItem('configuracaoAssistente'));
 
-fetch('/api/ativar-assistente', {
+fetch('app.js', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ prompt: config.prompt })
