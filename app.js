@@ -1,5 +1,6 @@
 // js/app.js
-
+"background_color": "#000000",
+  "theme_color": "#000000",
 async function carregarCombinacoes() {
   try {
     const resposta = await fetch('https://raw.githubusercontent.com/seu-usuario/a.Infodose/main/Metapulso_70_combinacoes.json');
