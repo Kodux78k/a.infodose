@@ -302,8 +302,8 @@
       const entrada = data[chave];
 
       if (entrada) {
-        localStorage.setItem("ultima_triade_simbólica", JSON.stringify({ chave, ...entrada }));
-        localStorage.setItem("tema_ativo", entrada.tema || "default");
+        localStorage.setItem("configuracaoAssistente", JSON.stringify({ chave, ...entrada }));
+        localStorage.setItem("assistenteAtivo", entrada.tema || "default");
         exibirTriade(chave, entrada);
         tocarSomSuave();
       } else {
