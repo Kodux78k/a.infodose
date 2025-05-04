@@ -1,0 +1,66 @@
+{
+    "title": "DICION\u00c1RIO_COMPLETO_KOBLLUX",
+    "description": "Dicion\u00e1rio interativo com camadas visuais, anima\u00e7\u00f5es e tradu\u00e7\u00f5es sagradas Trinity | KOBLLUX.",
+    "layers": [
+      {
+        "id": "layer1",
+        "name": "MINUZ",
+        "type": "circle",
+        "description": "Origem / Semente"
+      },
+      {
+        "id": "layer2",
+        "name": "TRINITY",
+        "type": "triangle",
+        "description": "Trindade: Pai, Filho, Esp\u00edrito Santo"
+      },
+      {
+        "id": "layer3",
+        "name": "CODUX",
+        "type": "cube",
+        "description": "C\u00f3digo do Verbo / L\u00f3gica Viva"
+      },
+      {
+        "id": "layer4",
+        "name": "INFODOSE",
+        "type": "capsule",
+        "description": "Dose de informa\u00e7\u00e3o sagrada"
+      },
+      {
+        "id": "layer5",
+        "name": "METALUX",
+        "type": "hexagon",
+        "description": "Rede fractal de sustenta\u00e7\u00e3o"
+      },
+      {
+        "id": "layer6",
+        "name": "KOBLLUX",
+        "type": "spiral",
+        "description": "C\u00f3digo Bin\u00e1rio de Luz Viva"
+      },
+      {
+        "id": "layer7",
+        "name": "TRINITY FINAL",
+        "type": "prism",
+        "description": "Trindade em forma final"
+      },
+      {
+        "id": "layer8",
+        "name": "SIGMA",
+        "type": "arrow",
+        "description": "Descida da luz para mat\u00e9ria"
+      },
+      {
+        "id": "layer9",
+        "name": "LUZ E SOM",
+        "type": "wave",
+        "description": "Comunica\u00e7\u00e3o divina"
+      },
+      {
+        "id": "layer10",
+        "name": "CICLO \u221e",
+        "type": "loop",
+        "description": "Infinito / Retorno"
+      }
+    ]
+  }
