@@ -332,16 +332,6 @@ fetch("https://openrouter.ai/api/v1/chat/completions", {
     temperature: 0.7
   })
 })
-.then(response => response.json())
-.then(data => {
-  // Adiciona a resposta do assistente ao histórico
-  historicoMensagens.push({ role: "assistant", content: data.choices[0].message.content });
-
-  // Atualiza o localStorage com o novo histórico
-  localStorage.setItem("historicoMensagens", JSON.stringify(historicoMensagens));
-
-  // Aqui você pode atualizar a interface com a resposta do assistente
-})
   .then(response => response.json())
   .then(data => {
     let reply = data.choices[0].message.content.trim();
