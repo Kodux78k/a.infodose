@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1" name="viewport" />
+<html lang="pt-BR"><head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
   <title>dual.Infodose Chat Cinematográfico</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
   <style>
     :root {
       --background-dark: linear-gradient(to bottom, #000000, #1a1a1a);
@@ -63,7 +61,7 @@
       min-height: 120px;
       max-height: 600px;
       width: 100%;
-      max-width: 450px;
+      max-width: 400px;
       font-size: 1.0em;
       overflow-y: auto;
   }
@@ -117,7 +115,7 @@
       z-index: 1;
       display: flex;
       gap: 10px;
-      margin-bottom: 99px;
+      margin-bottom: 90px;
       width: 100%;
       max-width: 500px;
     }
@@ -205,7 +203,7 @@ h3 {
   </style>
 </head>
 <body>
-  <div id="particles-js"></div>
+  <div id="particles-js"><canvas class="particles-js-canvas-el" width="1170" height="1854" style="width: 100%; height: 100%;"></canvas></div>
   <div class="svg-container">
     <object data="3D_logo_Dual_Infodose_9.svg" type="image/svg+xml"></object>
   </div>
@@ -215,14 +213,14 @@ h3 {
       <div style="display: flex; align-items: center;">
         <div class="copy-button" onclick="copyResponse()" title="Copiar resposta">
 <svg class="icon" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="10" stroke="white" fill="none"/>
-    <rect x="6" y="6" width="12" height="12" stroke="white" fill="none"/>
+    <circle cx="12" cy="12" r="10" stroke="white" fill="none"></circle>
+    <rect x="6" y="6" width="12" height="12" stroke="white" fill="none"></rect>
   </svg>
 </div>
         <div class="paste-button" onclick="pasteToInput()" title="Colar no campo de envio">
 <svg class="icon" viewBox="0 0 24 24">
-    <circle class="paste-icon-circle" cx="12" cy="12" r="10" stroke="white" fill="none"/>
-    <line class="paste-icon-line" x1="12" y1="4" x2="12" y2="20" stroke="white" fill="none"/>
+    <circle class="paste-icon-circle" cx="12" cy="12" r="10" stroke="white" fill="none"></circle>
+    <line class="paste-icon-line" x1="12" y1="4" x2="12" y2="20" stroke="white" fill="none"></line>
   </svg>
 </div>
       </div>
@@ -234,7 +232,7 @@ h3 {
     </div>
   </div>
   <div class="input-container">
-    <input id="userInput" placeholder="Diga: 'oi, Dual'..." type="text" />
+    <input id="userInput" placeholder="Diga: 'oi, Dual'..." type="text">
     <button onclick="sendMessage()">➤</button>
     <button onclick="startVoice()">
       <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
@@ -611,5 +609,5 @@ function falar(frase) {
       retina_detect: true
     });
   </script>
-</body>
-</html>
+
+</body></html>
