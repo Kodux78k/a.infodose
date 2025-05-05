@@ -484,7 +484,8 @@ h3 {
     /* ─── INICIALIZAÇÃO ─────────────────────────────────────────────────────── */
     loadConfig();
     // se você tiver config de particles.json, carregue aqui:
-    // particlesJS.load('particles-js','particles.json',()=>{});
+    // 
+    particlesJS.load('particles-js','particles.json',()=>{});
     
     /* ─── EVENTOS ──────────────────────────────────────────────────────────── */
     sendBtn.addEventListener('click', sendMessage);
@@ -495,13 +496,6 @@ h3 {
     nextBtn.addEventListener('click', () => changePage(1));
     voiceBtn.addEventListener('click', startVoice);
   });
-  </script>
-   <!-- particles.js no fim -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <script>
-    particlesJS.load('particles-js','particles.json',() => {
-      console.log('particles.js iniciado');
-    });
   </script>
 </body>
 </html>
