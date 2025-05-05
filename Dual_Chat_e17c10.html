@@ -1,0 +1,488 @@
+<html lang="pt-BR"><head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>dual.Infodose Chat Cinematográfico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background-dark: linear-gradient(to bottom, #000000, #1a1a1a);
+      --background-light: linear-gradient(to bottom, #ffffff, #e0e0e0);
+      --text-dark: white;
+      --text-light: black;
+      --primary-color: #111111;
+      --secondary-color: #5e5c5e;
+    }
+    body {
+      background: var(--background-dark);
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-dark);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      transition: all 0.5s ease;
+    }
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      top: 0;
+      left: 0;
+    }
+    .svg-container {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 160px;
+      height: 160px;
+      animation: pulse 2s infinite;
+      z-index: 1;
+    }
+    .svg-container object {
+      width: 100%;
+      height: 100%;
+    }
+    .response-container {
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 12px;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      min-height: 120px;
+      max-height: 600px;
+      width: 100%;
+      max-width: 400px;
+      font-size: 1.0em;
+      overflow-y: auto;
+  }
+
+    .response-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .copy-button, .paste-button {
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: background 0.3s;
+      margin-right: 10px;
+    }
+    .copy-button:hover, .paste-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pagination button {
+      background: none;
+      border: none;
+      font-size: 1em;
+      color: rgb(111, 228, 251);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .pagination button:hover {
+      transform: scale(1.1);
+    }
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .page.active {
+      display: block;
+      opacity: 1;
+    }
+    .input-container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 90px;
+      width: 100%;
+      max-width: 500px;
+    }
+    input {
+      flex-grow: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 1em;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: inherit;
+    }
+    button {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      color: white;
+      font-size: 1.5em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    
+    }
+    .icon {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+    @keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.response-block {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  animation: fadeIn 0.8s ease forwards;
+  transition: background 0.5s ease;
+    font-size: 0.9em; /* reduzido para melhor leitura em mobile */
+  line-height: 1.4em;
+}
+h3 {
+  font-size: 1.1em;
+}
+
+/* Gradientes leves por bloco */
+.response-block.intro {
+  background: linear-gradient(135deg, rgba(0,255,255,0.2), rgba(0,100,100,0.1));
+  border-left: 4px solid #00ffff;
+}
+
+.response-block.middle {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(50,50,50,0.1));
+  border-left: 4px solid #ffffff66;
+}
+
+.response-block.ending {
+  background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(100,0,100,0.1));
+  border-left: 4px solid #ff00ff;
+}
+
+.page {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.page.active {
+  display: block;
+  opacity: 1;
+}
+    .response-block:hover {
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+  </style>
+</head>
+<body>
+  <div id="particles-js"><canvas class="particles-js-canvas-el" width="1170" height="1854" style="width: 100%; height: 100%;"></canvas></div>
+  <div class="svg-container">
+    <object data="3D_logo_Dual_Infodose_9.svg" type="image/svg+xml"></object>
+  </div>
+  <div class="response-container" id="response">
+    <div class="page active"><strong>clique no ◉ , e diga um Oi.</strong> Do seu jeito. <strong>Sempre </strong>único.<strong> Sempre </strong>seu.</div>
+    <div class="response-controls">
+      <div style="display: flex; align-items: center;">
+        <div class="copy-button" onclick="copyResponse()" title="Copiar resposta">
+<svg class="icon" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" stroke="white" fill="none"></circle>
+    <rect x="6" y="6" width="12" height="12" stroke="white" fill="none"></rect>
+  </svg>
+</div>
+        <div class="paste-button" onclick="pasteToInput()" title="Colar no campo de envio">
+<svg class="icon" viewBox="0 0 24 24">
+    <circle class="paste-icon-circle" cx="12" cy="12" r="10" stroke="white" fill="none"></circle>
+    <line class="paste-icon-line" x1="12" y1="4" x2="12" y2="20" stroke="white" fill="none"></line>
+  </svg>
+</div>
+      </div>
+      <div class="pagination">
+        <button onclick="changePage(-1)">⟵</button>
+        <span id="pageIndicator">1 / 1</span>
+        <button onclick="changePage(1)">⟶</button>
+      </div>
+    </div>
+  </div>
+  <div class="input-container">
+    <input id="userInput" placeholder="Diga: 'oi, Dual'..." type="text">
+    <button onclick="sendMessage()">➤</button>
+    <button onclick="startVoice()">
+      <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
+    </button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></<script>
+  // ─── CACHE DE ELEMENTOS ─────────────────────────────────────────────────────
+  const $input          = () => document.getElementById('userInput');
+  const $response       = () => document.getElementById('response');
+  const $pageIndicator  = () => document.getElementById('pageIndicator');
+  const RESPONSE_CONTROLS = '.response-controls';
+
+  // ─── ESTADO GLOBAL ──────────────────────────────────────────────────────────
+  let currentPage = 0;
+  let pages       = [];
+  let assistenteAtivo = false;
+  let configuracaoAssistente = {};
+  let assistentes = [];
+
+  // ─── UTILITÁRIOS ────────────────────────────────────────────────────────────
+  const saveConfig    = () => localStorage.setItem('configuracaoAssistente', JSON.stringify(configuracaoAssistente));
+  const loadConfig    = () => {
+    const cfg = localStorage.getItem('configuracaoAssistente');
+    if (cfg) { configuracaoAssistente = JSON.parse(cfg); assistenteAtivo = true; }
+  };
+  const clearPages    = () => $response().querySelectorAll('.page').forEach(el => el.remove());
+  const createElement = (tag,cname,txt) => { const e=document.createElement(tag); if(cname)e.className=cname; if(txt)e.textContent=txt; return e; };
+  const highlightText = txt => txt.split(' ').map(w=>`<span style="letter-spacing:0.5px;">${w}</span>`).join(' ');
+  const speak         = txt => {
+    const u = new SpeechSynthesisUtterance(`${txt} Do seu jeito, sempre único, sempre seu.`);
+    u.lang = 'pt-BR'; speechSynthesis.speak(u);
+  };
+
+  // ─── ATIVAÇÃO DO ASSISTENTE ─────────────────────────────────────────────────
+  const PAT_ACT = /Nome do Assistente:\s*(.+)[\r\n]+Tríade de Emojis:\s*(.+)[\r\n]+Frase Pulsante:\s*(.+)[\r\n]+([\s\S]+)/i;
+  const verificarAtivacao = prompt => {
+    const m = prompt.match(PAT_ACT);
+    if (!m) return;
+    assistenteAtivo = true;
+    configuracaoAssistente = {
+      nome:      m[1].trim(),
+      emojis:    m[2].trim(),
+      frase:     m[3].trim(),
+      descricao: m[4].trim()
+    };
+    console.log('Assistente ativado:', configuracaoAssistente);
+    saveConfig();
+  };
+
+  // ─── ENVIO DE MENSAGEM ──────────────────────────────────────────────────────
+  const sendMessage = () => {
+    const text = $input().value.trim();
+    if (!text) return;
+    generateBotReply(text);
+    $input().value = '';
+  };
+
+  // ─── GERAÇÃO DA RESPOSTA ────────────────────────────────────────────────────
+  const generateBotReply = userText => {
+    verificarAtivacao(userText);
+    const lower = userText.toLowerCase();
+
+    if (/(^|\s)(olá|oi)(\s|$)/.test(lower)) {
+      return handleSimpleReply('Olá! Dual.Infodose ativa, ⚡️ pulso reconhecido. Quer ajuda? só falar! Infodose, ajuda!');
+    }
+    if (lower.includes('ajuda')) {
+      return handleSimpleReply('Explore o mundo Dual.! clique, descubra, Pergunte e ative agora. Como você gostaria de me chamar?');
+    }
+    callOpenRouter(userText);
+  };
+
+  const handleSimpleReply = reply => {
+    renderPaginatedResponse(reply);
+    speak(reply);
+  };
+
+  // ─── CHAMADA À IA EXTERNA ────────────────────────────────────────────────────
+  const callOpenRouter = async userText => {
+    clearPages();
+    const loading = createElement('div','page active','Pulso enviado... Recebendo vibração...');
+    $response().insertBefore(loading, $response().querySelector(RESPONSE_CONTROLS));
+    $pageIndicator().textContent = '1 / 1';
+
+    let body;
+    const baseMessages = [{ role:'user', content: userText }];
+    if (assistenteAtivo) {
+      // tentamos carregar config personalizada
+      const slug = configuracaoAssistente.nome
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g,'_')
+        .replace(/^_|_$/g,'');
+      const urlJson = `https://raw.githubusercontent.com/Kodux-78k/a.Infodose/main/assistentes_ativacao.json ${slug}`;
+      try {
+        const res = await fetch(urlJson);
+        if (!res.ok) throw new Error(res.status);
+        const cfg = await res.json();
+        const persona        = cfg.persona.descricao;
+        const comportamento  = cfg.comportamento.join('\n');
+        const dicionario     = Object.entries(cfg.dicionario).map(([k,v])=>`${k}: ${v}`).join('\n');
+        const historias      = cfg.historias.join('\n\n');
+        const fewShots       = cfg.few_shots.map(fs=>`U: ${fs.user}\nA: ${fs.assistant}`).join('\n\n');
+        const modelParams    = { temperature: cfg.model.temperature, max_tokens: cfg.model.max_tokens };
+        const messages       = [
+          { role:'system', content: persona },
+          { role:'system', content: comportamento },
+          { role:'system', content: dicionario },
+          { role:'system', content: historias },
+          { role:'system', content: fewShots },
+          ...baseMessages
+        ];
+        body = { model: cfg.model.nome, messages, ...modelParams };
+      } catch {
+        console.warn('Fallback IA sem persona');
+        body = { model:'meta-llama/llama-4-maverick:free', messages: baseMessages, temperature:0.7 };
+      }
+    } else {
+      body = { model:'meta-llama/llama-4-maverick:free', messages: baseMessages, temperature:0.7 };
+    }
+
+    try {
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer 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`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      if (!resp.ok) throw new Error(resp.status);
+      const data = await resp.json();
+      const reply = data.choices[0].message.content.trim();
+      renderPaginatedResponse(reply);
+      speak(reply);
+    } catch (err) {
+      console.error('Erro OpenRouter:', err);
+      handleSimpleReply('Erro ao conectar com a IA. Tente novamente.');
+    }
+  };
+
+  // ─── PAGINAÇÃO DE RESPOSTA ──────────────────────────────────────────────────
+  const renderPaginatedResponse = text => {
+    const words     = text.split(' ');
+    const blockSize = Math.ceil(words.length / 3);
+    const blocks    = [];
+    for (let i = 0; i < words.length; i += blockSize) {
+      blocks.push(words.slice(i, i + blockSize).join(' '));
+    }
+    pages = [];
+    for (let i = 0; i < blocks.length; i += 3) {
+      const [i1,i2,i3] = [blocks[i]||'', blocks[i+1]||'', blocks[i+2]||''];
+      pages.push(`
+        <div class="response-block intro fade-in">
+          <h3>🎁 Recompensa Inicial</h3>
+          <p><strong>${highlightText(i1)}</strong></p>
+        </div>
+        <div class="response-block middle fade-in">
+          <h3>👁️ Exploração e Curiosidade</h3>
+          <p>${highlightText(i2)}</p>
+        </div>
+        <div class="response-block ending fade-in">
+          <h3>⚡️Antecipação Vibracional</h3>
+          <p><strong>${highlightText(i3)}</strong></p>
+        </div>
+        <p style="margin-top:20px;font-size:0.8em;">
+          <em>Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.</em>
+        </p>
+      `);
+    }
+    clearPages();
+    const first = createElement('div','page active');
+    first.innerHTML = pages[0];
+    $response().insertBefore(first, $response().querySelector(RESPONSE_CONTROLS));
+    currentPage = 0;
+    updatePageIndicator();
+  };
+
+  const updatePageIndicator = () =>
+    $pageIndicator().textContent = `${currentPage + 1} / ${pages.length}`;
+
+  const changePage = offset => {
+    const np = currentPage + offset;
+    if (np < 0 || np >= pages.length) return;
+    const doms = $response().querySelectorAll('.page');
+    doms[currentPage].classList.remove('active');
+    doms[np].classList.add('active');
+    currentPage = np;
+    updatePageIndicator();
+  };
+
+  // ─── OUTRAS FUNÇÕES DE CONTROLE ─────────────────────────────────────────────
+  const copyResponse = () => {
+    const active = document.querySelector('.page.active');
+    if (active) navigator.clipboard.writeText(active.innerText);
+  };
+  const pasteToInput = async () => {
+    try { $input().value = await navigator.clipboard.readText(); }
+    catch (e) { console.error('Erro ao colar:', e); }
+  };
+  const startVoice = () => {
+    const R = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    R.lang = 'pt-BR';
+    R.start();
+    R.onresult = e => {
+      $input().value = e.results[0][0].transcript;
+      sendMessage();
+    };
+  };
+
+  // ─── METAPULSO POR TRÍADE ───────────────────────────────────────────────────
+  const carregarMetapulso = async () => {
+    try {
+      const res = await fetch('https://raw.githubusercontent.com/Kodux78k/A.Dual.Infodose/main/metapulso_70_combinacoes.json');
+      if (!res.ok) throw new Error(res.status);
+      assistentes = await res.json();
+      console.log('Assistentes carregados:', assistentes);
+    } catch (e) {
+      console.error('Erro ao carregar assistentes:', e);
+    }
+  };
+
+  const ativarAssistentePorTriade = texto => {
+    const emojisInput = Array.from(texto.match(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu) || []);
+    if (emojisInput.length < 3) return null;
+    for (const a of assistentes) {
+      if (a.triade.every(e => emojisInput.includes(e))) {
+        console.log(`Assistente ativado: ${a.nome}`);
+        falar(a.frase);
+        return a;
+      }
+    }
+    return null;
+  };
+
+  const falar = frase => {
+    const u = new SpeechSynthesisUtterance(frase);
+    u.lang = 'pt-BR';
+    speechSynthesis.speak(u);
+  };
+
+  // ─── INICIALIZAÇÃO ─────────────────────────────────────────────────────────
+  loadConfig();
+  carregarMetapulso();
+
+  // expose para controles de página
+  window.sendMessage        = sendMessage;
+  window.changePage         = changePage;
+  window.copyResponse       = copyResponse;
+  window.pasteToInput       = pasteToInput;
+  window.startVoice         = startVoice;
+  window.ativarAssistentePorTriade = ativarAssistentePorTriade;
+</script>
+
+</body></html>
