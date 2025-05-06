@@ -486,7 +486,17 @@ h3 {
     // se você tiver config de particles.json, carregue aqui:
     // 
     particlesJS.load('particles-js','particles.json',()=>{});
-    
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 30, density: { enable: true, value_area: 600 } },
+        color: { value: ['#00ffff', '#ff00ff'] },
+        shape: { type: 'circle' },
+        opacity: { value: 0.4, random: true },
+        size: { value: 3, random: true },
+        move: { enable: true, speed: 1.2, direction: 'none', out_mode: 'out' }
+      },
+      retina_detect: true
+    });
     /* ─── EVENTOS ──────────────────────────────────────────────────────────── */
     sendBtn.addEventListener('click', sendMessage);
     input.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
