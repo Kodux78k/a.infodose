@@ -35,8 +35,20 @@
     .response-block.ending { background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(100,0,100,0.1)); border-left: 4px solid #ff00ff; }
     .response-block h3 { font-size: 1.1em; margin-bottom: 8px; }
 
-    /* Input e botões */
-    .input-container { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; width: 90%; max-width: 500px; z-index: 1; }
+    /* Input e botões – POSIÇÃO PERFEITA */
+    .input-container {
+      position: absolute;
+      bottom: 20px;                       /* ficou mais próximo da base */
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      width: 90%;
+      max-width: 500px;
+      align-items: center;                /* centraliza verticalmente */
+      padding-bottom: env(safe-area-inset-bottom); /* respeita notch/área segura */
+      z-index: 1;
+    }
     .input-container input { flex: 1; padding: 10px; border: none; border-radius: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 1em; text-align: center; outline: none; }
     button.send { background: linear-gradient(45deg, #111, #5e5c5e); border: none; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; animation: pulse 2s infinite; }
     .icon { width: 24px; height: 24px; fill: #fff; }
@@ -157,7 +169,7 @@
         setTimeout(() => ctrl.abort(), 10000);
         const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${assistantConfig?.apiKey||''}`, 'Content-Type':'application/json' },
+          headers: { 'Authorization': `Bearer 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`, 'Content-Type':'application/json' },
           body: JSON.stringify(body),
           signal: ctrl.signal
         });
