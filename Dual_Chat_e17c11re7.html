@@ -355,7 +355,7 @@ h3 {
         try {
           const slug = configuracaoAssistente.nome.toLowerCase()
             .replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
-          const urlJson = `https://raw.githubusercontent.com/Kodux78k/a.infodose/main/assistentes_ativacao_${slug}.json`;
+          const urlJson = `https://raw.githubusercontent.com/Kodux78k/a.infodose/main/assistentes_ativacao.json`;
           const res = await fetch(urlJson);
           if (!res.ok) throw new Error(res.status);
           const cfg = await res.json();
@@ -406,14 +406,6 @@ h3 {
         handleSimpleReply('Erro ao conectar com a IA. Tente novamente.');
       }
     };
-    
-/* Atualização para falar sem sobreposição */
-const speak = txt => {
-  if (speechSynthesis.speaking) speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(`${txt} Do seu jeito, sempre único, sempre seu.`);
-  u.lang = 'pt-BR';
-  speechSynthesis.speak(u);
-};
 
     /* ─── PAGINAÇÃO DE RESPOSTA ─────────────────────────────────────────────── */
     const renderPaginatedResponse = text => {
