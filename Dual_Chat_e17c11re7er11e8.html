@@ -72,13 +72,13 @@
       100% { opacity:1; transform:translateY(0); }
     }
     .fade-in { animation:fadeIn 0.8s ease forwards; }
-    .response-block {
-      margin-bottom:20px; padding:10px; border-radius:10px;
-      font-size:0.9em; line-height:1.4em; text-align:center;
-    }
-    .response-block.intro { background:rgba(0,255,255,0.2); border-left:4px solid #00ffff; }
-    .response-block.middle { background:rgba(255,255,255,0.05); border-left:4px solid #ffffff66; }
-    .response-block.ending { background:rgba(255,0,255,0.2); border-left:4px solid #ff00ff; }
+    
+    .response-block { margin-bottom: 20px; padding: 10px; border-radius: 10px; animation: fadeIn 0.8s ease forwards; transition: box-shadow 0.5s ease; font-size: 1em; line-height: 1.4em; text-align: left; }
+    .response-block:hover { box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+    .response-block.intro { background: linear-gradient(135deg, rgba(0,255,255,0.2), rgba(0,100,100,0.1)); border-left: 4px solid #00ffff; }
+    .response-block.middle { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(50,50,50,0.1)); border-left: 4px solid #ffffff66; }
+    .response-block.ending { background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(100,0,100,0.1)); border-left: 4px solid #ff00ff; }
+    .response-block h3 { font-size: 1.1em; margin-bottom: 8px; }
   </style>
 </head>
 <body>
@@ -111,8 +111,8 @@
 
   <div class="input-container">
     <input id="userInput" placeholder="Diga: 'Oi, dual'" type="text">
-    <button id="sendBtn" class="send" title="Enviar">➤</button>
-    <button id="voiceBtn" class="send" title="Falar">
+    <button id="sendBtn" class="send" title="Enviar" onclick="sendMessage()">➤</button>
+    <button id="voiceBtn" class="send" title="Falar" onclick="startVoice()">
       <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
     </button>
   </div>
