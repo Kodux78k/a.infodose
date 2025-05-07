@@ -16,7 +16,7 @@
     .svg-container object { width: 100%; height: 100%; }
 
     /* Resposta paginada */
-    .response-container { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; padding: 12px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border-radius: 20px; max-height: 50%; overflow-y: auto; z-index: 1; text-align: center; }
+    .response-container { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; padding: 12px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border-radius: 20px; max-height: 50%; overflow-y: auto; z-index: 1; text-align: center; }
     .response-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); }
     .control-buttons { display: flex; gap: 10px; }
     .control-buttons button { cursor: pointer; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.05); transition: background 0.3s; display: flex; align-items: center; }
@@ -36,9 +36,9 @@
     .response-block h3 { font-size: 1.1em; margin-bottom: 8px; }
 
     /* Input e botões */
-    .input-container { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; width: 90%; max-width: 500px; z-index: 1; }
+    .input-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; width: 100%; max-width: 500px; z-index: 1; }
     .input-container input { flex: 1; padding: 10px; border: none; border-radius: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 1em; text-align: center; outline: none; }
-    button.send { background: linear-gradient(45deg, #111, #5e5c5e); border: none; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; animation: pulse 2s infinite; }
+    button.send { background: linear-gradient(45deg, #111, #5e5c5e); border: none; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .icon { width: 24px; height: 24px; fill: #fff; }
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -157,7 +157,7 @@
         setTimeout(() => ctrl.abort(), 10000);
         const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${assistantConfig?.apiKey||''}`, 'Content-Type':'application/json' },
+          headers: { 'Authorization': `Bearer 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`, 'Content-Type':'application/json' },
           body: JSON.stringify(body),
           signal: ctrl.signal
         });
