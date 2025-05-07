@@ -37,24 +37,52 @@
 
     /* Input e botões – POSIÇÃO PERFEITA */
     .input-container {
-      position: absolute;
-      bottom: 20px;                       /* ficou mais próximo da base */
-      left: 50%;
-      transform: translateX(-50%);
+      position: relative;
+      z-index: 1;
       display: flex;
       gap: 10px;
-      width: 90%;
+      margin-bottom: 99px;
+      width: 100%;
       max-width: 500px;
-      align-items: center;                /* centraliza verticalmente */
-      padding-bottom: env(safe-area-inset-bottom); /* respeita notch/área segura */
-      z-index: 1;
     }
-    .input-container input { flex: 1; padding: 10px; border: none; border-radius: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 1em; text-align: center; outline: none; }
-    button.send { background: linear-gradient(45deg, #111, #5e5c5e); border: none; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; animation: pulse 2s infinite; }
-    .icon { width: 24px; height: 24px; fill: #fff; }
+    input {
+      flex-grow: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 1em;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: inherit;
+    }
+    button {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      color: white;
+      font-size: 1.5em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    
+    }
+    .icon {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+    @keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse { 0%,100% { transform: scale(1) translate(-50%,-50%); } 50% { transform: scale(1.05) translate(-50%,-50%); } }
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
   </style>
 </head>
 <body>
@@ -88,8 +116,8 @@
 
   <div class="input-container">
     <input id="userInput" type="text" placeholder="Diga: 'Oi, dual'" />
-    <button id="sendBtn" class="send" title="Enviar">➤</button>
-    <button id="voiceBtn" class="send" title="Falar">
+    <button id="sendBtn" class="send" title="Enviar" onclick="sendMessage()">➤</button>
+    <button id="voiceBtn" class="send" title="Falar" onclick="startVoice()">
       <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
     </button>
   </div>
