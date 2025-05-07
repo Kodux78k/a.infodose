@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>dual.Infodose Chat Cinematográfico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset e layout básico */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: 'Montserrat', sans-serif; background: linear-gradient(to bottom, #000, #1a1a1a); color: #fff; }
+    #particles-js { position: absolute; inset: 0; z-index: 0; }
+
+    /* Container SVG central */
+    .svg-container { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 160px; height: 160px; animation: pulse 2s infinite; z-index: 1; }
+    .svg-container object { width: 100%; height: 100%; }
+
+    /* Resposta paginada */
+    .response-container { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; padding: 12px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border-radius: 20px; max-height: 50%; overflow-y: auto; z-index: 1; text-align: center; }
+    .response-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .control-buttons { display: flex; gap: 10px; }
+    .control-buttons button { cursor: pointer; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.05); transition: background 0.3s; display: flex; align-items: center; }
+    .control-buttons button:hover { background: rgba(255,255,255,0.15); }
+    .pagination { display: flex; align-items: center; gap: 10px; }
+    .pagination button { background: none; border: none; font-size: 1.2em; color: rgb(111,228,251); cursor: pointer; transition: transform 0.3s; }
+    .pagination button:hover { transform: scale(1.1); }
+    .page { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
+    .page.active { display: block; opacity: 1; }
+
+    /* Blocos de resposta */
+    .response-block { margin-bottom: 20px; padding: 10px; border-radius: 10px; animation: fadeIn 0.8s ease forwards; transition: box-shadow 0.5s ease; font-size: 1em; line-height: 1.4em; text-align: left; }
+    .response-block:hover { box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+    .response-block.intro { background: linear-gradient(135deg, rgba(0,255,255,0.2), rgba(0,100,100,0.1)); border-left: 4px solid #00ffff; }
+    .response-block.middle { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(50,50,50,0.1)); border-left: 4px solid #ffffff66; }
+    .response-block.ending { background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(100,0,100,0.1)); border-left: 4px solid #ff00ff; }
+    .response-block h3 { font-size: 1.1em; margin-bottom: 8px; }
+
+    /* Input e botões */
+    .input-container { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; width: 90%; max-width: 500px; z-index: 1; }
+    .input-container input { flex: 1; padding: 10px; border: none; border-radius: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 1em; text-align: center; outline: none; }
+    button.send { background: linear-gradient(45deg, #111, #5e5c5e); border: none; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; animation: pulse 2s infinite; }
+    .icon { width: 24px; height: 24px; fill: #fff; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { transform: scale(1) translate(-50%,-50%); } 50% { transform: scale(1.05) translate(-50%,-50%); } }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="svg-container">
+    <object data="3D_logo_Dual_Infodose_9.svg" type="image/svg+xml"></object>
+  </div>
+
+  <div class="response-container" id="response">
+    <div class="page active">
+      <strong>clique no ◉ , e diga “oi dual”.</strong><br>
+      Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.
+    </div>
+    <div class="response-controls">
+      <div class="control-buttons">
+        <button class="copy-button" title="Copiar resposta">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" fill="none"/><rect x="6" y="6" width="12" height="12" stroke="white" fill="none"/></svg>
+        </button>
+        <button class="paste-button" title="Colar no campo de envio">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" fill="none"/><line x1="12" y1="4" x2="12" y2="20" stroke="white"/></svg>
+        </button>
+      </div>
+      <div class="pagination">
+        <button data-action="prev">⟵</button>
+        <span id="pageIndicator">1 / 1</span>
+        <button data-action="next">⟶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-container">
+    <input id="userInput" type="text" placeholder="Diga: 'Oi, dual'" />
+    <button id="sendBtn" class="send" title="Enviar">➤</button>
+    <button id="voiceBtn" class="send" title="Falar">
+      <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
+    </button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+  (() => {
+    // Seletores e estado
+    const sel = s => document.querySelector(s);
+    const selAll = s => Array.from(document.querySelectorAll(s));
+    const input       = sel('#userInput');
+    const respCont    = sel('#response');
+    const pageInd     = sel('#pageIndicator');
+    const [copyBtn, pasteBtn] = selAll('.copy-button, .paste-button');
+    const sendBtn     = sel('#sendBtn');
+    const voiceBtn    = sel('#voiceBtn');
+    let pages = [], currentPage = 0;
+
+    // Helpers
+    const createEl = (tag, cls, html='') => { const e = document.createElement(tag); if (cls) e.className = cls; e.innerHTML = html; return e; };
+    const highlight = txt => txt.split(' ').map(w => `<span style="letter-spacing:0.5px;">${w}</span>`).join(' ');
+    const speak = txt => { const u = new SpeechSynthesisUtterance(txt); u.lang = 'pt-BR'; speechSynthesis.speak(u); };
+
+    // Carrega configuração do assistente (localStorage ou fallback)
+    let assistantConfig = null;
+    const loadAssistantConfig = () => {
+      const raw = localStorage.getItem('configuracaoAssistente');
+      if (raw) assistantConfig = JSON.parse(raw);
+    };
+
+    // Paginação e rendering
+    function renderPaginatedResponse(text) {
+      const words = text.split(' ');
+      const chunk = Math.ceil(words.length / 3);
+      const parts = [words.slice(0,chunk), words.slice(chunk,2*chunk), words.slice(2*chunk)].map(arr => arr.join(' '));
+      pages = parts.map((block, i) => {
+        const classes = ['intro','middle','ending'][i];
+        const titles  = ['🎁 Recompensa Inicial','👁️ Exploração e Curiosidade','⚡️Antecipação Vibracional'];
+        return `
+          <div class="response-block ${classes}"><h3>${titles[i]}</h3><p><strong>${highlight(block)}</strong></p></div>
+        `;
+      });
+      // insere página única com trio de blocos
+      respCont.querySelectorAll('.page').forEach(e => e.remove());
+      const pg = createEl('div','page active', pages.join('') + `<p style="margin-top:20px;font-size:0.8em;"><em>Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.</em></p>`);
+      respCont.insertBefore(pg, sel('.response-controls'));
+      currentPage = 0;
+      pageInd.textContent = `1 / ${pages.length ? 1 : 1}`;
+    }
+
+    // Chamada à API OpenRouter
+    async function callOpenRouter(userText) {
+      // load config
+      loadAssistantConfig();
+      // loading feedback
+      renderPaginatedResponse('Pulso enviado... Recebendo vibração...');
+      speak('Pulso enviado... Recebendo vibração...');
+      speak('Do seu jeito. Sempre único. Sempre seu.');
+
+      // prepara body
+      const baseMsg = { role: 'user', content: userText };
+      let body = { model: 'meta-llama/llama-4-maverick:free', messages: [baseMsg], temperature: 0.7 };
+      if (assistantConfig) {
+        const cfg = assistantConfig;
+        const sysMsgs = [
+          { role:'system', content: cfg.persona.descricao },
+          { role:'system', content: cfg.comportamento.join('\n') },
+          { role:'system', content: Object.entries(cfg.dicionario).map(([k,v])=>`${k}: ${v}`).join('\n') },
+          { role:'system', content: cfg.historias.join('\n\n') },
+          { role:'system', content: cfg.few_shots.map(f=>`U: ${f.user}\nA: ${f.assistant}`).join('\n\n') }
+        ];
+        body = { model: cfg.model.nome, messages: [...sysMsgs, baseMsg], temperature: cfg.model.temperature, max_tokens: cfg.model.max_tokens };
+      }
+
+      try {
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), 10000);
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${assistantConfig?.apiKey||''}`, 'Content-Type':'application/json' },
+          body: JSON.stringify(body),
+          signal: ctrl.signal
+        });
+        const data = await res.json();
+        renderPaginatedResponse(data.choices[0].message.content.trim());
+        speak(data.choices[0].message.content.trim());
+        speak('Do seu jeito. Sempre único. Sempre seu.');
+      } catch {
+        renderPaginatedResponse('Erro ao conectar com a IA. Tente novamente mais tarde.');
+        speak('Erro ao conectar com a IA. Tente novamente mais tarde.');
+        speak('Do seu jeito. Sempre único. Sempre seu.');
+      }
+    }
+
+    // Envio de mensagem inicial
+    function handleSend() {
+      const txt = input.value.trim().toLowerCase();
+      if (txt !== 'oi dual') return;
+      input.value = '';
+      renderPaginatedResponse('Dual Infodose ativa');
+      speak('Dual Infodose ativa');
+      callOpenRouter('Oi dual, ativar! Se apresente como assistente simbólico dual.Infodose.');
+    }
+
+    // Eventos
+    copyBtn.addEventListener('click', () => {
+      const active = sel('.page.active');
+      if (active) navigator.clipboard.writeText(active.innerText);
+    });
+    pasteBtn.addEventListener('click', async () => {
+      input.value = await navigator.clipboard.readText().catch(()=>'');
+    });
+    sendBtn.addEventListener('click', handleSend);
+    input.addEventListener('keypress', e => e.key==='Enter' && handleSend());
+    voiceBtn.addEventListener('click', () => {
+      const R = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
+      R.lang = 'pt-BR';
+      R.onresult = e => { input.value = e.results[0][0].transcript; handleSend(); };
+      R.start();
+    });
+
+    // Inicializa partículas
+    particlesJS('particles-js', {
+      particles: { number:{value:30,density:{enable:true,value_area:600}}, color:{value:['#00ffff','#ff00ff']},
+        shape:{type:'circle'}, opacity:{value:0.4,random:true}, size:{value:3,random:true},
+        move:{enable:true,speed:1.2,out_mode:'out'} },
+      retina_detect: true
+    });
+  })();
+  </script>
+</body>
+</html>
