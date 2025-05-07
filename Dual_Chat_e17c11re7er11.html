@@ -150,7 +150,7 @@
       u.lang = 'pt-BR';
       speechSynthesis.speak(u);
     };
-
+    
     /* ─── RENDERIZAÇÃO COM PÁGINAS REAJUSTADA ───────────────────────────────── */
     const renderPaginatedResponse = text => {
       if (!text || !text.trim()) {
@@ -286,7 +286,8 @@
       }
     }
 
-    function sendMessage(){
+      
+      const sendMessage = () => {
       const txt=input.value.trim().toLowerCase();
       if(txt !== 'Oi dual') return;
       input.value='';
