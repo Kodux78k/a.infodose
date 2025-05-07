@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<html lang="pt-BR"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>dual.Infodose Chat Cinematográfico</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
   <style>
     /* Reset e layout básico */
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,75 +33,38 @@
     .response-block.ending { background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(100,0,100,0.1)); border-left: 4px solid #ff00ff; }
     .response-block h3 { font-size: 1.1em; margin-bottom: 8px; }
 
-    /* Input e botões – POSIÇÃO PERFEITA */
-    .input-container {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      gap: 10px;
-      margin-bottom: 99px;
-      width: 100%;
-      max-width: 500px;
-    }
-    input {
-      flex-grow: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 20px;
-      font-size: 1em;
-      outline: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: inherit;
-    }
-    button {
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      color: white;
-      font-size: 1.5em;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: pulse 2s infinite;
-    
-    }
-    .icon {
-      width: 24px;
-      height: 24px;
-      fill: white;
-    }
-    @keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+    /* Input e botões */
+    .input-container { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; width: 100%; max-width: 500px; z-index: 1; }
+    .input-container input { flex: 1; padding: 10px; border: none; border-radius: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 1em; text-align: center; outline: none; }
+    button.send { background: linear-gradient(45deg, #111, #5e5c5e); border: none; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .icon { width: 24px; height: 24px; fill: #fff; }
 
-.fade-in {
-  animation: fadeIn 0.8s ease forwards;
-}
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { transform: scale(1) translate(-50%,-50%); } 50% { transform: scale(1.05) translate(-50%,-50%); } }
   </style>
 </head>
 <body>
-  <div id="particles-js"></div>
+  <div id="particles-js"><canvas class="particles-js-canvas-el" width="1170" height="2010" style="width: 100%; height: 100%;"></canvas></div>
 
   <div class="svg-container">
     <object data="3D_logo_Dual_Infodose_9.svg" type="image/svg+xml"></object>
   </div>
 
   <div class="response-container" id="response">
+    
     <div class="page active">
-      <strong>clique no ◉ , e diga “oi dual”.</strong><br>
-      Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.
-    </div>
-    <div class="response-controls">
+          <div class="response-block intro"><h3>🎁 Recompensa Inicial</h3><p><strong><span style="letter-spacing:0.5px;">Pulso</span> <span style="letter-spacing:0.5px;">enviado...</span></strong></p></div>
+        
+          <div class="response-block middle"><h3>👁️ Exploração e Curiosidade</h3><p><strong><span style="letter-spacing:0.5px;">Recebendo</span> <span style="letter-spacing:0.5px;">vibração...</span></strong></p></div>
+        
+          <div class="response-block ending"><h3>⚡️Antecipação Vibracional</h3><p><strong><span style="letter-spacing:0.5px;"></span></strong></p></div>
+        <p style="margin-top:20px;font-size:0.8em;"><em>Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.</em></p></div><div class="response-controls">
       <div class="control-buttons">
         <button class="copy-button" title="Copiar resposta">
-          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" fill="none"/><rect x="6" y="6" width="12" height="12" stroke="white" fill="none"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" fill="none"></circle><rect x="6" y="6" width="12" height="12" stroke="white" fill="none"></rect></svg>
         </button>
         <button class="paste-button" title="Colar no campo de envio">
-          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" fill="none"/><line x1="12" y1="4" x2="12" y2="20" stroke="white"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" fill="none"></circle><line x1="12" y1="4" x2="12" y2="20" stroke="white"></line></svg>
         </button>
       </div>
       <div class="pagination">
@@ -115,9 +76,9 @@
   </div>
 
   <div class="input-container">
-    <input id="userInput" type="text" placeholder="Diga: 'Oi, dual'" />
-    <button id="sendBtn" class="send" title="Enviar" onclick="sendMessage()">➤</button>
-    <button id="voiceBtn" class="send" title="Falar" onclick="startVoice()">
+    <input id="userInput" type="text" placeholder="Diga: 'Oi, dual'">
+    <button id="sendBtn" class="send" title="Enviar">➤</button>
+    <button id="voiceBtn" class="send" title="Falar">
       <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
     </button>
   </div>
@@ -197,7 +158,7 @@
         setTimeout(() => ctrl.abort(), 10000);
         const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer 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`, 'Content-Type':'application/json' },
+          headers: { 'Authorization': `Bearer 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`, 'Content-Type':'application/json' },
           body: JSON.stringify(body),
           signal: ctrl.signal
         });
@@ -248,5 +209,5 @@
     });
   })();
   </script>
-</body>
-</html>
+
+</body></html>
