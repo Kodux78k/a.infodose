@@ -110,7 +110,7 @@
   </div>
 
   <div class="input-container">
-    <input id="userInput" placeholder="Diga: 'oi dual'" type="text">
+    <input id="userInput" placeholder="Diga: 'Oi, dual'" type="text">
     <button id="sendBtn" class="send" title="Enviar">➤</button>
     <button id="voiceBtn" class="send" title="Falar">
       <object data="Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="36" height="36"></object>
@@ -287,15 +287,15 @@
     }
 
       
-      const sendMessage = () => {
+      function sendMessage(){
       const txt=input.value.trim().toLowerCase();
-      if(txt !== 'Oi dual') return;
+      if(txt !== 'oi dual') return;
       input.value='';
       clearPages();
       const pagina=createEl('div','page active',`<strong>Dual Infodose ativa</strong>`);
       responseEl.insertBefore(pagina,responseEl.querySelector('.response-controls'));
       pageIndicator.textContent='1 / 1';
-      speakRaw('Dual conectado');
+      speakRaw('Dual Infodose ativa');
       callOpenRouter('Oi dual, ativar ! se apresente como assistente simbólico dual.Infodose.');
     }
 
