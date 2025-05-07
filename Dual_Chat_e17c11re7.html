@@ -324,6 +324,7 @@ h3 {
       const text = input.value.trim();
       if (!text) return;
       generateBotReply(text);
+      speak(reply);
       input.value = '';
     };
 
@@ -441,7 +442,7 @@ h3 {
       responseEl.insertBefore(first, responseEl.querySelector('.response-controls'));
       currentPage = 0;
       updatePageIndicator();
-      speak(reply);
+      
     };
 
     const updatePageIndicator = () =>
@@ -473,7 +474,7 @@ h3 {
       R.onresult = e => {
         input.value = e.results[0][0].transcript;
         sendMessage();
-        speak(reply);
+        
       };
     };
 
