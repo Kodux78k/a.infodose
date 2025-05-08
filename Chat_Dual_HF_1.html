@@ -406,7 +406,7 @@ const callOpenRouter = async userText => {
   pageIndicator.textContent = '1 / 1';
 
   try {
-    const res = await fetch("https://kodux-dual-infodose.hf.space/run/predict", {
+    const res = await fetch("https://Kodux-Dual-Infodose.hf.space/run/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data: [userText] })
@@ -427,7 +427,7 @@ const callOpenRouter = async userText => {
   } catch (err) {
     console.error("Erro Hugging Face:", err);
     responseEl.removeChild(loading);
-    handleSimpleReply("Erro ao conectar com a IA Hugging Face. Tente novamente.");
+    handleSimpleReply("Erro ao conectar com sua IA Dual.Infodose. Tente novamente.");
   }
 };
 
