@@ -408,7 +408,12 @@ const sendMessage = () => {
     renderPaginatedResponse(reply);
     speak(reply);
   };
-
+  
+  const pagina = createEl(
+      'div',
+      'page active',
+      `<strong>Dual Infodose ativa</strong>`
+    );
   /* ─── CHAMADA À IA EXTERNA ───────────────────────────────────────────────── */
   const callOpenRouter = async userText => {
     clearPages();
