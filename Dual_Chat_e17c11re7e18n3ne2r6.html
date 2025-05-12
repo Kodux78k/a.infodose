@@ -338,7 +338,7 @@ const sendMessage = () => {
 
  const entidadesSimbólicas = {
     'oi dual': {
-      arquivo: 'Super_Treinamento_Universal_Dual_Infodose_v1-16.txt',
+      arquivo: 'Super_Treinamento_Universal_Dual_Infodose_v1-23.txt',
       mensagem: 'Dual Infodose ativa. Pulso enviado... Recebendo vibração...'
     },
     'ativar kobllux': {
@@ -361,16 +361,13 @@ const sendMessage = () => {
       'page active',
       `<strong>Dual Infodose ativa</strong>`
     );
-    responseEl.insertBefore(
-      pagina,
-      responseEl.querySelector('.response-controls')
-    );
+    
     pageIndicator.textContent = '1 / 1';
 
     speakRaw('Dual Infodose ativa. Pulso enviado...Recebendo vibração...⚡️');
 
     // FETCH DO ARQUIVO .TXT com o conteúdo simbólico
-    fetch('Super_Treinamento_Universal_Dual_Infodose_v1-16.txt')
+    fetch('Super_Treinamento_Universal_Dual_Infodose_v1-23.txt')
       .then(response => response.text())
       .then(treinamento => {
         infodoseTreinamento = treinamento; // salva treinamento simbólico persistente
@@ -421,7 +418,7 @@ const sendMessage = () => {
 
     let body;
     const baseMessages = [{ role:'user', content: userText }];
-    fetch('Super_Treinamento_Universal_Dual_Infodose_v1-7.txt')
+    fetch('Super_Treinamento_Universal_Dual_Infodose_v1-23.txt')
       .then(response => response.userText())
       .then(treinamento => {
         infodoseTreinamento = treinamento; // salva treinamento simbólico persistente
@@ -455,17 +452,17 @@ const sendMessage = () => {
           max_tokens: cfg.model.max_tokens
         };
       } catch {
-        body = { model:'meta-llama/llama-4-maverick:free', messages: baseMessages, temperature:0.7 };
+        body = { model:'meta-llama/llama-4-maverick:free', messages: baseMessages, temperature:0.4 };
       }
     } else {
-      body = { model:'meta-llama/llama-4-maverick:free', messages: baseMessages, temperature:0.7 };
+      body = { model:'meta-llama/llama-4-maverick:free', messages: baseMessages, temperature:0.3 };
     }
 
     try {
       const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer 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`,
+          'Authorization': `Bearer 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`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
