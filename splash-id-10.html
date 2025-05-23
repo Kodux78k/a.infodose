@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Central - Dual Infodose</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" href="assets/icons/icon-192.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Montserrat',sans-serif;
+      background: linear-gradient(to bottom, #000, #1a1a1a);
+      color:#fff; height:100vh; overflow:hidden;
+      display:flex; align-items:flex-start; justify-content:center;
+      padding-top: 250px; /* empurra conteúdo pra baixo */
+      position:relative; opacity:0;
+      animation:fadeInBody 1.8s ease forwards;
+    }
+    @keyframes fadeInBody { to { opacity:1; } }
+    @keyframes fadeOutBody { to { opacity:0; } }
+
+    #particles-js { position:absolute; inset:0; z-index:0; }
+
+    .center-group {
+      z-index:1;
+      display:flex; flex-direction:column;
+      align-items:center; gap:1rem;
+      cursor:pointer; padding:20px;
+    }
+    .logo-container {
+      width:180px;
+      animation:glow 3s ease-in-out infinite alternate;
+      transition:transform .8s;
+      pointer-events:none;
+    }
+    .logo-container object { width:100%; display:block; }
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 10px #0ff) drop-shadow(0 0 20px #f0f); }
+      to   { filter: drop-shadow(0 0 25px #0ff) drop-shadow(0 0 35px #f0f); }
+    }
+    .infodose {
+      font-size:1.6em; font-weight:300;
+      opacity:0; animation:fadeIn 1.5s forwards 1s;
+      pointer-events:none;
+    }
+    .infodose strong { font-weight:600; }
+    @keyframes fadeIn { to { opacity:1; } }
+
+    .login-container {
+      width:280px;
+      padding:1rem;
+      background:rgba(0,0,0,0.7);
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:10px;
+      backdrop-filter:blur(8px);
+      display:flex; flex-direction:column; gap:1rem;
+      opacity:0; pointer-events:none;
+      transition:opacity .3s;
+    }
+    .login-container.active {
+      opacity:1; pointer-events:auto;
+    }
+    .login-container input {
+      width:100%; background:transparent;
+      border:none; border-bottom:1px solid rgba(255,255,255,0.5);
+      padding:0.5rem 0; font-size:1em; font-weight:300;
+      color:#fff; outline:none; text-align:center;
+    }
+    .login-container input::placeholder {
+      color:rgba(255,255,255,0.6); font-weight:300;
+    }
+    .login-container button {
+      width:100%;
+      background:transparent; border:1px solid #0ff;
+      border-radius:6px; padding:0.6rem 0;
+      font-size:1em; font-weight:600; color:#0ff;
+      cursor:pointer; transition:all .25s;
+    }
+    .login-container button:hover {
+      background:#0ff; color:#000; border-color:#0ff;
+    }
+    .logout-area button {
+      width:100%;
+      background:transparent; border:1px solid #f55;
+      border-radius:6px; padding:0.6rem 0;
+      font-size:1em; font-weight:600; color:#f55;
+      cursor:pointer; transition:all .25s;
+    }
+    .logout-area button:hover {
+      background:#f55; color:#000; border-color:#f55;
+    }
+    #buyTokens button {
+      width:100%;
+      background:transparent; border:1px solid #0f0;
+      border-radius:6px; padding:0.6rem 0;
+      font-size:1em; font-weight:600; color:#0f0;
+      cursor:pointer; transition:all .25s;
+    }
+    #buyTokens button:hover {
+      background:#0f0; color:#000; border-color:#0f0;
+    }
+
+    @media(max-width:360px) {
+      .logo-container { width:140px; }
+      .infodose { font-size:1.3em; }
+      .login-container { width:90vw; }
+    }
+    @media(max-height: 700px) {
+  .center-group {
+    margin-top: 20px;
+  }
+}
+@media(min-height: 900px) {
+  .center-group {
+    margin-top: 80px;
+  }
+}
+  </style>
+</head>
+<body>
+
+  <svg style="display:none"><filter id="distort">
+    <feTurbulence baseFrequency="0.012" numOctaves="2" result="turb"/>
+    <feDisplacementMap in="SourceGraphic" in2="turb" scale="24"/>
+  </filter></svg>
+
+  <audio id="transitionSound" src="assets/sounds/suave_portal.mp3" preload="auto"></audio>
+  <div id="particles-js"></div>
+
+  <div class="center-group" id="unlockArea">
+    <div class="logo-container">
+      <object data="assets/icons/3D_logo_Dual_Infodose_10.svg" type="image/svg+xml"></object>
+    </div>
+    <div class="infodose">dual.<strong>Infodose</strong></div>
+
+    <div class="login-container" id="loginBox">
+      <form id="loginForm">
+        <input type="text" id="user" placeholder="Usuário" required>
+        <input type="password" id="pass" placeholder="Senha" required>
+        <button type="submit">Entrar</button>
+      </form>
+      <div class="logout-area" style="display:none;">
+        <button id="logoutBtn">Desconectar</button>
+      </div>
+      <div id="buyTokens" style="display:none;">
+        <button id="buyIFTBtn">Comprar 999 IFT (R$10)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script type="module">
+  import { loadStripe } from 'https://cdn.jsdelivr.net/npm/@stripe/stripe-js@1.42.0/+esm';
+
+  const unlockArea = document.getElementById('unlockArea');
+  const loginBox   = document.getElementById('loginBox');
+  const loginForm  = document.getElementById('loginForm');
+  const userInput  = document.getElementById('user');
+  const passInput  = document.getElementById('pass');
+  const logoutBtn  = document.getElementById('logoutBtn');
+  const logoutArea = loginBox.querySelector('.logout-area');
+  const buyArea    = document.getElementById('buyTokens');
+  const buyIFTBtn  = document.getElementById('buyIFTBtn');
+  const storedKey  = 'infodose_user';
+  const stripePk   = 'pk_live_SEU_PUBLISHABLE_KEY';
+
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 40, density: { enable: true, value_area: 600 } },
+      color: { value: ['#0ff','#f0f'] },
+      shape: { type: 'circle' },
+      opacity: { value: 0.4, random: true },
+      size: { value: 2.5, random: true },
+      move: { enable: true, speed: 1.2, random: true, out_mode: 'out' }
+    },
+    retina_detect: true
+  });
+
+  function showLogin() {
+    logoutArea.style.display = 'none';
+    buyArea.style.display    = 'none';
+    loginForm.style.display  = 'flex';
+    loginBox.classList.add('active');
+  }
+  function showLogout() {
+    loginForm.style.display  = 'none';
+    logoutArea.style.display = 'flex';
+    buyArea.style.display    = 'none';
+    loginBox.classList.add('active');
+  }
+  function showBuy() {
+    loginForm.style.display  = 'none';
+    logoutArea.style.display = 'none';
+    buyArea.style.display    = 'block';
+    loginBox.classList.add('active');
+  }
+
+  async function checkAccess(user) {
+  if (user.toLowerCase() === 'kodux') {
+    return goToIndex();
+  }
+
+  // Verifica se usuário existe
+  let res = await fetch(`/api/usage?userId=${encodeURIComponent(user)}`, {
+    credentials: 'include'
+  });
+
+  let data = await res.json();
+
+  if (!data.exists) {
+    console.log('[+] Usuário não encontrado. Criando novo usuário...');
+    // Cria novo usuário
+    const createRes = await fetch(`/api/create-user`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ userId: user })
+    });
+
+    if (!createRes.ok) {
+      return alert('Erro ao criar usuário.');
+    }
+
+    // Tenta revalidar após criação
+    res = await fetch(`/api/usage?userId=${encodeURIComponent(user)}`, {
+      credentials: 'include'
+    });
+
+    data = await res.json();
+  }
+
+  if (!data.authenticated) {
+    return showLogin();
+  }
+
+  if (data.isAdmin || data.saldo?.IFT > 0) {
+    return goToIndex();
+  } else {
+    return showBuy();
+  }
+}
+
+  unlockArea.addEventListener('click', () => {
+    const user = localStorage.getItem(storedKey);
+    if (user) {
+      checkAccess(user);
+    } else {
+      showLogin();
+      gsap.fromTo(loginBox, { y:-20 }, { y:0, duration:0.6, ease:'power2.out' });
+    }
+  });
+
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const u = userInput.value.trim(), p = passInput.value.trim();
+    if (!u || !p) return alert('Preencha login e senha');
+    localStorage.setItem(storedKey, u);
+    checkAccess(u);
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem(storedKey);
+    showLogin();
+  });
+
+  buyIFTBtn.addEventListener('click', async () => {
+    const stripe = await loadStripe(stripePk);
+    const res    = await fetch('/api/create-checkout', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        packageId: 'IFT_1000',
+        userId: localStorage.getItem(storedKey)
+      })
+    });
+    const { url } = await res.json();
+    window.location.href = url;
+  });
+
+  // Botão de teste/hack (temporário)
+  const testBtn = document.createElement('button');
+  testBtn.textContent = '✅ Testar Compra (Hack Temporário)';
+  testBtn.style.marginTop = '10px';
+  testBtn.onclick = () => goToIndex();
+  buyArea.appendChild(testBtn);
+
+  function goToIndex() {
+    const snd = document.getElementById('transitionSound');
+    snd.volume = 0; snd.play();
+    gsap.to('.logo-container', { scale:0, duration:1, ease:'power3.out', filter:'url(#distort)' });
+    gsap.to('.infodose', { opacity:0, duration:0.6 });
+    setTimeout(() => document.body.style.animation = 'fadeOutBody 1s forwards', 600);
+    setTimeout(() => window.location.href = 'index.html', 1400);
+  }
+
+  window.addEventListener('load', () => {
+    if (localStorage.getItem(storedKey)) {
+      showLogout();
+    }
+  });
+</script>
+</body>
+</html>
