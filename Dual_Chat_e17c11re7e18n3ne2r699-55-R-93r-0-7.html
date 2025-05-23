@@ -79,8 +79,6 @@
     #particles-js { position: absolute; inset: 0; z-index: 0 }
     .svg-container {
       position: absolute;
-      object-fit: contain;
-      display: block;
       top: 260px;
       left: 50%;
       width: 200px; height: 200px;
@@ -93,7 +91,7 @@
     }
     .svg-container.fading { opacity: 0 }
     .svg-container object {
-      width: 100%; height: 100%;
+      width: 100%; height: 100%; object-fit: contain; display: block;
       animation: pulseLogo 2s infinite var(--easing);
     }
 
