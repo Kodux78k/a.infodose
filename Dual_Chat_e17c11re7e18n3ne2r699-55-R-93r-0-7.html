@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dual-Infodose Chat Cinematográfico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* == Variáveis Globais == */
+    :root {
+      --bg-gradient: linear-gradient(to bottom, #000, #1a1a1a);
+      --text-color: #d7d7d7;
+      --container-bg: rgba(0,0,0,.3);
+      --fast: 0.4s;
+      --med: 0.8s;
+      --slow: 1.8s;
+      --easing: ease-in-out;
+    }
+    /* == Temas == */
+    body.dark {
+      --bg-gradient: linear-gradient(to bottom, #000, #1a1a1a);
+      --text-color: #d7d7d7;
+      --container-bg: rgba(0,0,0,.3);
+    }
+    body.light {
+      --bg-gradient: linear-gradient(to bottom, #fafafa, #e0e0e0);
+      --text-color: #222;
+      --container-bg: rgba(255,255,255,.6);
+    }
+    body.medium {
+      --bg-gradient: linear-gradient(to bottom, #555, #333);
+      --text-color: #eee;
+      --container-bg: rgba(0,0,0,.2);
+    }
+    body.vibe {
+      --bg-gradient: linear-gradient(135deg, #00d8d8, #d800d8);
+      --text-color: #fff;
+      --container-bg: rgba(255,255,255,.2);
+    }
+
+    /* == Reset & Layout == */
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body { width: 100%; height: 100%; overflow: hidden }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background: var(--bg-gradient);
+      color: var(--text-color);
+      font-family: 'Montserrat', sans-serif;
+      transition: background var(--slow) var(--easing), color var(--slow) var(--easing);
+      animation: fadeInBody var(--slow) var(--easing) forwards;
+      position: relative;
+    }
+
+    /* == Botão de Tema == */
+    #themeToggle {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) rotate(0deg);
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--text-color);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      transition: transform var(--med) var(--easing), border-color var(--med);
+      opacity: 0.6;
+      z-index: 10;
+    }
+    #themeToggle:hover {
+      transform: translateX(-50%) rotate(45deg);
+      opacity: 1;
+    }
+
+    /* == Partículas & Logo == */
+    #particles-js { position: absolute; inset: 0; z-index: 0 }
+    .svg-container {
+      position: absolute;
+      top: 260px;
+      left: 50%;
+      width: 200px; height: 200px;
+      transform: translate(-50%, 0) rotateY(0deg);
+      transition: transform var(--slow) var(--easing), opacity var(--fast);
+      z-index: 1;
+    }
+    .svg-container:hover {
+      transform: translate(-50%, 0) rotateY(180deg);
+    }
+    .svg-container.fading { opacity: 0 }
+    .svg-container object {
+      width: 100%; height: 100%;
+      animation: pulseLogo 2s infinite var(--easing);
+    }
+
+    /* == Nome do Assistente == */
+    #assistantName {
+      margin-top: 230px;
+      font-size: 1.2em;
+      font-weight: 700;
+      opacity: 0.85;
+      z-index: 1;
+      transition: color var(--fast);
+    }
+
+    /* == Container de Resposta == */
+    .response-container {
+      position: fixed;
+      left: 20px; right: 20px; bottom: 160px;
+      padding: 16px;
+      background: var(--container-bg);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      z-index: 1;
+      transition: background var(--fast);
+    }
+
+    /* == Páginas & Blocos == */
+    .page { display: none; opacity: 0; transition: opacity var(--med) var(--easing) }
+    .page.active { display: block; opacity: 1 }
+    .response-block {
+      margin: 1rem 0; padding: 1.4rem; border-radius: 12px;
+      line-height: 1.5; position: relative; cursor: pointer; overflow: hidden;
+      background: rgba(255,255,255,0.05);
+      transition:
+        box-shadow var(--fast) var(--easing),
+        transform var(--fast) var(--easing),
+        background var(--fast) var(--easing);
+    }
+    .response-block:hover {
+      box-shadow: 0 0 20px rgba(0,255,255,0.5);
+      background: rgba(255,255,255,0.1);
+    }
+    .response-block.intro { border-left: 4px solid #0ff }
+    .response-block.middle { border-left: 4px solid rgba(255,255,255,0.5) }
+    .response-block.ending { border-left: 4px solid #f0f }
+
+    /* == Controles de Resposta == */
+    .response-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      transition: border-color var(--fast);
+    }
+    .control-buttons button {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      margin-right: 8px;
+      cursor: pointer;
+      transition: background var(--fast), transform var(--fast);
+    }
+    .control-buttons button:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+    .pagination button {
+      border: none; background: transparent;
+      font-size: 1.4em; cursor: pointer;
+      transition: transform var(--fast);
+    }
+    .pagination button:hover { transform: scale(1.3) }
+
+    /* == Input & Botões == */
+    .input-container {
+      position: fixed;
+      left: 20px; right: 20px; bottom: 90px;
+      display: flex; gap: 8px; z-index: 2;
+    }
+    .input-container input {
+      flex: 1; padding: 12px; border: none; border-radius: 24px;
+      background: rgba(255,255,255,0.2); color: inherit; font-size: 16px;
+      transition: background var(--fast);
+    }
+    .input-container input:focus {
+      background: rgba(255,255,255,0.3);
+      outline: none;
+    }
+    .input-container button {
+      width: 60px; height: 60px; border: none; border-radius: 50%;
+      background: linear-gradient(45deg, #00d8d8, #d800d8);
+      font-size: 32px; color: #fff; cursor: pointer;
+      animation: pulseBtn 2s infinite var(--easing);
+      transition: transform var(--med);
+    }
+    .input-container button:hover { transform: scale(1.1) }
+
+    /* == Login Modal == */
+    .login-container {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 320px; padding: 2rem;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 12px; backdrop-filter: blur(8px);
+      z-index: 10; display: none;
+    }
+    .login-container.active { display: block }
+    .login-container input {
+      width: 100%; background: transparent; border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+      margin: 1rem 0; padding: 0.5rem 0; color: #fff;
+    }
+    .login-container button {
+      width: 100%; padding: 0.6rem; margin-top: 1rem;
+      border: none; border-radius: 8px;
+      background: #00d8d8; color: #000; cursor: pointer;
+      transition: background var(--fast);
+    }
+    .login-container button:hover { background: #00bcbc }
+
+    /* == Animações == */
+    @keyframes fadeInBody {
+      from { opacity: 0 } to { opacity: 1 }
+    }
+    @keyframes pulseLogo {
+      0%,100% { transform: scale(1) }
+      50%      { transform: scale(1.03) }
+    }
+    @keyframes pulseBtn {
+      0%,100% { transform: scale(1) }
+      50%      { transform: scale(1.1) }
+    }
+  </style>
+</head>
+<body class="dark">
+  <!-- Alternador de Tema -->
+  <button id="themeToggle" title="Alternar tema"></button>
+
+  <!-- Partículas e Logo -->
+  <div id="particles-js"></div>
+  <div class="svg-container" id="logoContainer">
+    <object id="logoObj" data="assets/icons/3D_logo_Dual_Infodose_10.png" type="image/png"></object>
+  </div>
+  <div id="assistantName"></div>
+
+  <!-- Respostas -->
+  <div class="response-container" id="response">
+    <div class="page initial active">
+      <strong>Clique no ◉ e diga “Oi, Dual”.</strong><br>
+      <em>Sempre único. Sempre seu.</em>
+    </div>
+    <div class="response-controls">
+      <div class="control-buttons">
+        <button class="copy-button" title="Copiar">
+          <object data="assets/icons/BW_quad_Dual_Infodose.svg" type="image/svg+xml" width="24" height="24"></object>
+        </button>
+        <button class="paste-button" title="Colar">
+          <object data="assets/icons/BW_Dual_Infodose.svg" type="image/svg+xml" width="24" height="24"></object>
+        </button>
+        <button id="toggleBtn" class="toggle-button" title="Login Infodose">
+          <object data="assets/icons/circle_icon_fade_rente.png" type="image/png" width="24" height="24"></object>
+        </button>
+        <button id="kittyBtn" class="kitty-button" title="Ativar Assistente de Estudos">
+          <object data="assets/icons/DualKittyKard-icon-3.png" type="image/png" width="24" height="24"></object>
+        </button>
+      </div>
+      <div class="pagination">
+        <button data-action="prev">⟵</button>
+        <span id="pageIndicator">1 / 1</span>
+        <button data-action="next">⟶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entrada de Texto -->
+  <div class="input-container">
+    <input id="userInput" type="text" placeholder="Diga: 'oi, Dual'...">
+    <button id="sendBtn" title="Enviar">➤</button>
+    <button id="voiceBtn" title="Falar">
+      <object data="assets/icons/Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="24" height="24"></object>
+    </button>
+  </div>
+
+  <!-- Modal de Login -->
+  <div class="login-container" id="loginBox">
+    <form id="loginForm">
+      <input type="text" id="userName" placeholder="Nome do usuário" required>
+      <input type="text" id="assistantInput" placeholder="Nome dual.infodose" required>
+      <button type="submit">Ativar</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    (function(){
+      const STORAGE_KEY = 'infodoseEnabled',
+            THEME_KEY   = 'infodoseTheme',
+            KIT_PRIMARY = 'assets/icons/DualKittyKard-icon-3.png',
+            KIT_FALLBACK= 'assets/icons/dual_Dual_Infodose.svg',
+            CONFIG = {
+              TRAINING_FILE: 'data/Super_Treinamento_Universal_Dual_Infodose_v1-28.txt',
+              API_URL: 'https://openrouter.ai/api/v1/chat/completions',
+              MODEL: 'deepseek/deepseek-chat-v3-0324:free',
+              TEMP: 0.2,
+              CHUNK_SIZE: 78000,
+              AUTH_TOKEN: 'Bearer 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'
+            },
+            orderThemes = ['dark','light','medium','vibe'];
+
+      let training = '', chunks = [], chunkIndex = 0;
+      let isEnabled = false, isStudying = false;
+      let userName = '', assistantBase = '';
+      let conversation = [], pages = [], currentPage = 0, autoAdvance = true;
+      let originalLogo = '';
+
+      const $ = s => document.querySelector(s);
+      const create = (t, c, h) => {
+        let e = document.createElement(t);
+        if(c) e.className = c;
+        if(h) e.innerHTML = h;
+        return e;
+      };
+
+      function applyTheme(theme){
+        document.body.classList.remove(...orderThemes);
+        document.body.classList.add(theme);
+      }
+      function toggleTheme(){
+        let cur = localStorage.getItem(THEME_KEY) || 'dark';
+        let next = orderThemes[(orderThemes.indexOf(cur) + 1) % orderThemes.length];
+        applyTheme(next);
+        localStorage.setItem(THEME_KEY, next);
+      }
+
+      async function init(){
+        originalLogo = $('#logoObj').data;
+        try {
+          training = await fetch(CONFIG.TRAINING_FILE).then(r => r.text());
+          for(let i=0; i<training.length; i+=CONFIG.CHUNK_SIZE){
+            chunks.push(training.slice(i, i + CONFIG.CHUNK_SIZE));
+          }
+        } catch(e){ /* ignorar erros de fetch */ }
+
+        loadConfig();
+        particlesJS('particles-js', {
+          particles: {
+            number: { value: 40 },
+            color: { value: ['#0ff','#f0f'] },
+            shape: { type: 'circle' },
+            opacity: { value: 0.4 },
+            size: { value: 2.4 },
+            move: { enable: true, speed: 1.5 }
+          },
+          retina_detect: true
+        });
+        bindUI();
+      }
+
+      function loadConfig(){
+        if(localStorage.getItem(STORAGE_KEY)==='1'){
+          isEnabled = true;
+          userName = localStorage.getItem('userName') || '';
+          assistantBase = localStorage.getItem('assistantBase') || '';
+          conversation = [{
+            role:'system',
+            content: `${chunks[0]||training}\n\nUsuário: ${userName}.\nAssistente: ${assistantBase} dual.infodose.`
+          }];
+          chunkIndex = 1;
+        }
+        updateUI();
+      }
+
+      function updateUI(){
+        $('#toggleBtn').classList.toggle('active', isEnabled);
+        $('#kittyBtn').classList.toggle('active', isStudying);
+        $('#assistantName').textContent = isEnabled
+          ? `${assistantBase} dual.infodose`
+          : isStudying
+            ? 'Estudos dual.infodose'
+            : '';
+      }
+
+      function changeLogo(srcs){
+        let [p,f] = Array.isArray(srcs) ? srcs : [srcs,null],
+            cont = $('#logoContainer'),
+            obj  = $('#logoObj');
+        cont.classList.add('fading');
+        cont.addEventListener('transitionend', function once(){
+          cont.removeEventListener('transitionend', once);
+          obj.data = p;
+          if(f) obj.addEventListener('error', function onErr(){
+            obj.removeEventListener('error', onErr);
+            obj.data = f;
+          });
+          cont.classList.remove('fading');
+        });
+      }
+
+      function splitText(t){
+        let ps = t.split(/\n\s*\n/).filter(p=>p.trim());
+        if(ps.length%3!==0){
+          ps = t.match(/[^\.!\?]+[\.!\?]+/g).map(s=>s.trim());
+        }
+        let g=[];
+        for(let i=0;i<ps.length;i+=3){
+          g.push(ps.slice(i,i+3));
+        }
+        return g;
+      }
+
+      function speak(txt,end){
+        let u = new SpeechSynthesisUtterance(txt);
+        u.lang='pt-BR'; u.rate=0.99; u.pitch=1.1;
+        speechSynthesis.speak(u);
+        if(end) u.onend = end;
+      }
+
+      function showLoading(msg){
+        let r = $('#response'),
+            ctrl = document.querySelector('.response-controls');
+        r.querySelectorAll('.page:not(.initial)').forEach(p=>p.remove());
+        let p = create('div','page active');
+        p.appendChild(create('p','footer-text', msg));
+        r.insertBefore(p, ctrl);
+        pages=[p]; currentPage=0;
+        $('#pageIndicator').textContent='…';
+      }
+
+      function renderResponse(txt){
+        speechSynthesis.cancel();
+        autoAdvance = true;
+        let r = $('#response'),
+            ctrl = document.querySelector('.response-controls');
+        r.querySelectorAll('.page:not(.initial)').forEach(p=>p.remove());
+        pages = [];
+        let groups = splitText(txt),
+            titles = ['🎁 Recompensa Inicial','👁️ Exploração e Curiosidade','⚡️ Antecipação Vibracional'];
+        groups.forEach((grp,gi)=>{
+          let pg = create('div','page'+(gi===0?' active':'')); 
+          grp.forEach((para,j)=>{
+            let cls = j===0?'intro':j===1?'middle':'ending';
+            let block = create('div',`response-block ${cls}`,`<p>${para}</p>`);
+            block.addEventListener('click',()=>{
+              autoAdvance = false;
+              if(!block.dataset.spoken){
+                speechSynthesis.cancel();
+                block.dataset.spoken='1';
+                block.classList.add('clicked');
+              } else {
+                block.classList.add('expanded');
+                if(!isEnabled){
+                  isEnabled=true;
+                  localStorage.setItem(STORAGE_KEY,'1');
+                  updateUI();
+                }
+                showLoading('Pulso em Expansão...');
+                conversation.push({ role:'user', content:`${titles[j]}\n\n${para}` });
+                callAI();
+              }
+            });
+            block.addEventListener('animationend', e=>{
+              if(e.animationName==='clickPulse') block.classList.remove('clicked');
+            });
+            pg.appendChild(block);
+          });
+          pg.appendChild(create('p','footer-text',
+            `<em>Do seu jeito. <strong>Sempre</strong> único. <strong>Sempre</strong> seu.</em>`
+          ));
+          r.insertBefore(pg, ctrl);
+          pages.push(pg);
+        });
+        currentPage=0;
+        $('#pageIndicator').textContent=`1 / ${pages.length}`;
+        autoSpeakPage(0);
+      }
+
+      function autoSpeakPage(i){
+        let texts = Array.from(
+          pages[i].querySelectorAll('p:not(.footer-text)')
+        ).map(p=>p.innerText).join(' ');
+        speak(texts, ()=>{
+          if(!autoAdvance) return;
+          if(i < pages.length-1){
+            changePage(1);
+            autoSpeakPage(i+1);
+          } else {
+            speak('Do seu jeito, sempre único, sempre seu.');
+          }
+        });
+      }
+
+      function changePage(d){
+        let np = currentPage + d;
+        if(np<0||np>=pages.length) return;
+        pages[currentPage].classList.remove('active');
+        pages[np].classList.add('active');
+        currentPage = np;
+        $('#pageIndicator').textContent = `${np+1} / ${pages.length}`;
+      }
+
+      async function callAI(){
+        try {
+          let res = await fetch(CONFIG.API_URL,{
+            method:'POST',
+            headers:{
+              'Authorization': CONFIG.AUTH_TOKEN,
+              'Content-Type':'application/json'
+            },
+            body: JSON.stringify({
+              model: CONFIG.MODEL,
+              messages: conversation,
+              temperature: CONFIG.TEMP
+            })
+          });
+          let data = await res.json();
+          let ans = data.choices?.[0]?.message?.content.trim()||'Sem resposta.';
+          conversation.push({ role:'assistant', content:ans });
+          renderResponse(ans);
+          speak(ans);
+        } catch {
+          conversation.push({ role:'assistant', content:'O pulso oscilou, o fluxo continua.' });
+          renderResponse('O pulso oscilou, o fluxo continua.');
+        }
+      }
+
+      function deepTrain(){
+        if(chunkIndex < chunks.length){
+          conversation.unshift({
+            role:'system',
+            content: `🔍 Treinamento Profundo (${chunkIndex+1}/${chunks.length}):\n\n${chunks[chunkIndex]}`
+          });
+          chunkIndex++;
+          showLoading('🔍 Carregando Treinamento Profundo…');
+          setTimeout(()=>{
+            renderResponse(`Treinamento Profundo nível ${chunkIndex} carregado.`);
+          }, 800);
+        } else {
+          renderResponse('Você já carregou todo o treinamento disponível.');
+        }
+      }
+
+      function bindUI(){
+        $('#sendBtn').addEventListener('click', onSend);
+        $('#userInput').addEventListener('keypress', e=> e.key==='Enter' && onSend());
+        $('#voiceBtn').addEventListener('click', ()=>{
+          let rec = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
+          rec.lang='pt-BR'; rec.start();
+          rec.onresult = evt => { $('#userInput').value = evt.results[0][0].transcript; onSend(); };
+        });
+        document.querySelector('.control-buttons').addEventListener('click', e=>{
+          if(e.target.closest('.copy-button')){
+            autoAdvance=false;
+            let txt = Array.from(document.querySelectorAll('.response-container .page'))
+              .map(p=>p.innerText.trim()).join('\n\n');
+            navigator.clipboard.writeText(txt);
+          }
+          if(e.target.closest('.paste-button')){
+            autoAdvance=false;
+            navigator.clipboard.readText().then(txt=>$('#userInput').value=txt);
+          }
+          if(e.target.closest('#toggleBtn')){
+            autoAdvance=false;
+            if(!isEnabled) {
+              $('#loginBox').classList.add('active');
+            } else {
+              isEnabled=false;
+              localStorage.removeItem(STORAGE_KEY);
+              conversation=[];
+              updateUI();
+            }
+          }
+          if(e.target.closest('#kittyBtn')){
+            autoAdvance=false;
+            isStudying = !isStudying;
+            if(isStudying){
+              isEnabled=false;
+              chunkIndex=1;
+              conversation=[{
+                role:'system',
+                content: `${chunks[0]||training}\n\nA  voce é Assistente simbólico de Estudos dual.infodose.\nUsuário: ${userName}.\nAssistente: Estudos dual.infodose.`
+              }];
+              changeLogo([KIT_PRIMARY, KIT_FALLBACK]);
+            } else {
+              changeLogo(originalLogo);
+            }
+            updateUI();
+          }
+        });
+        document.querySelector('.pagination').addEventListener('click', e=>{
+          autoAdvance=false;
+          if(e.target.dataset.action==='prev') changePage(-1);
+          if(e.target.dataset.action==='next') changePage(1);
+        });
+        $('#loginForm').addEventListener('submit', e=>{
+          e.preventDefault();
+          let u = $('#userName').value.trim(),
+              a = $('#assistantInput').value.trim();
+          if(!u||!a) return alert('Preencha os dados');
+          isEnabled=true;
+          userName=u; assistantBase=a;
+          localStorage.setItem(STORAGE_KEY,'1');
+          localStorage.setItem('userName',u);
+          localStorage.setItem('assistantBase',a);
+          conversation=[{
+            role:'system',
+            content: `${chunks[0]||training}\n\nUsuário: ${u}.\nAssistente: ${a} dual.infodose.`
+          }];
+          chunkIndex=1;
+          updateUI();
+          $('#loginBox').classList.remove('active');
+        });
+      }
+
+      function onSend(){
+        let raw = $('#userInput').value.trim();
+        if(!raw) return;
+        $('#userInput').value='';
+        if(raw.toLowerCase()==='estado 78k') return deepTrain();
+        autoAdvance=false;
+        showLoading('⚡️ Pulso enviado... Recebendo Intenção…');
+        conversation.push({
+          role:'user',
+          content: isEnabled ? `Usuário ${userName}: ${raw}` : raw
+        });
+        callAI();
+      }
+
+      document.addEventListener('DOMContentLoaded', ()=>{
+        // Tema
+        const themeBtn = document.getElementById('themeToggle');
+        const saved = localStorage.getItem(THEME_KEY) || 'dark';
+        applyTheme(saved);
+        themeBtn.addEventListener('click', toggleTheme);
+        // Inicializa tudo
+        init();
+      });
+    })();
+  </script>
+</body>
+</html>
