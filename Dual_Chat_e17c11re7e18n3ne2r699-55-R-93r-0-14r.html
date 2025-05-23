@@ -11,33 +11,22 @@
       Variáveis Globais & Temas
     ==========================*/
     :root {
-      /* Gradientes */
       --gradient-dark: linear-gradient(to bottom, #000, #1a1a1a);
       --gradient-light: linear-gradient(to bottom, #666, #e0e0e0);
       --gradient-medium: linear-gradient(to bottom, #555, #333);
       --gradient-vibe: linear-gradient(135deg, #00d8d8, #d800d8);
-
-      /* Cores de texto */
       --text-dark: #d7d7d7;
       --text-light: #222;
       --text-medium: #eee;
       --text-vibe: #fff;
-
-      /* Fundo de containers */
       --bg-container-dark: rgba(0,0,0,0.3);
       --bg-container-light: rgba(255,255,255,0.6);
       --bg-container-medium: rgba(0,0,0,0.2);
       --bg-container-vibe: rgba(255,255,255,0.2);
-
-      /* Duração */
       --dur-fast: 0.4s;
       --dur-med: 0.8s;
       --dur-slow: 1.8s;
-
-      /* Easing */
       --ease: ease-in-out;
-
-      /* Foco */
       --focus-outline: 2px dashed #888;
     }
     [data-theme="dark"] {
@@ -173,13 +162,18 @@
       transition: border-color var(--dur-fast);
     }
     .control-buttons button {
-      background: rgba(255,255,255,0.1); border: none; border-radius: 0.5rem;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.1); border: none; border-radius: 50%;
       padding: 0.5rem; margin-right: 0.5rem; cursor: pointer;
       width: 2rem; height: 2rem; transition: transform var(--dur-fast), background var(--dur-fast);
     }
     .control-buttons button:hover {
       background: rgba(255,255,255,0.2);
       transform: scale(1.1);
+    }
+    .control-buttons button object {
+      display: block; margin: auto;
+      width: 1rem; height: 1rem;
     }
     .pagination button {
       border: none; background: none;
@@ -195,7 +189,7 @@
       Input & Botões
     ====================*/
     .input-container {
-      position: fixed; left: 1.25rem; right: 1.25rem; bottom: 5.625rem;
+      position: fixed; left: 1.25rem; right: 1.25rem; bottom: 8rem;
       display: flex; gap: 0.5rem; z-index: 2;
     }
     .input-container input {
@@ -206,18 +200,26 @@
     .input-container input:focus {
       background: rgba(255,255,255,0.3); outline: none;
     }
-    .input-container button {
-      width: 4.3125rem; height: 4.3125rem; border: none;
+    #sendBtn {
+      width: 5rem; height: 5rem; border: none;
       background-image: linear-gradient(42deg, #0ff, #f0f);
       background-clip: text; -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-size: 2.5rem; cursor: pointer;
+      font-size: 3rem; cursor: pointer;
       animation: pulseBtn 2s infinite ease-in-out;
       display: flex; align-items: center; justify-content: center;
       transition: transform var(--dur-med), opacity var(--dur-fast);
-      opacity: 0.7;
+      opacity: 0.8;
     }
-    .input-container button:hover { transform: scale(1.1); }
+    #sendBtn:hover { transform: scale(1.1); }
+    #voiceBtn {
+      width: 2.5rem; height: 2.5rem; border: none;
+      background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #voiceBtn object {
+      width: 1.25rem; height: 1.25rem; display: block; margin: auto;
+    }
 
     /*====================
       Login Modal
@@ -280,10 +282,18 @@
     </div>
     <div class="response-controls">
       <div class="control-buttons">
-        <button class="copy-button" aria-label="Copiar"><object data="assets/icons/BW_quad_Dual_Infodose.svg" type="image/svg+xml" width="24" height="24"></object></button>
-        <button class="paste-button" aria-label="Colar"><object data="assets/icons/BW_Dual_Infodose.svg" type="image/svg+xml" width="24" height="24"></object></button>
-        <button id="toggleBtn" class="toggle-button" aria-label="Login Infodose"><object data="assets/icons/circle_icon_fade_rente.png" type="image/png" width="24" height="24"></object></button>
-        <button id="kittyBtn" class="kitty-button" aria-label="Ativar Assistente de Estudos"><object data="assets/icons/DualKittyKard-icon-3.png" type="image/png" width="24" height="24"></object></button>
+        <button class="copy-button" aria-label="Copiar">
+          <object data="assets/icons/BW_quad_Dual_Infodose.svg" type="image/svg+xml"></object>
+        </button>
+        <button class="paste-button" aria-label="Colar">
+          <object data="assets/icons/BW_Dual_Infodose.svg" type="image/svg+xml"></object>
+        </button>
+        <button id="toggleBtn" aria-label="Login Infodose">
+          <object data="assets/icons/circle_icon_fade_rente.png" type="image/png"></object>
+        </button>
+        <button id="kittyBtn" aria-label="Ativar Assistente de Estudos">
+          <object data="assets/icons/DualKittyKard-icon-3.png" type="image/png"></object>
+        </button>
       </div>
       <div class="pagination" aria-label="Navegação de páginas">
         <button data-action="prev" aria-label="Página anterior">⟵</button>
@@ -297,7 +307,9 @@
   <div class="input-container">
     <input id="userInput" type="text" placeholder="Diga: 'oi, Dual'..." aria-label="Texto de entrada">
     <button id="sendBtn" aria-label="Enviar">➤</button>
-    <button id="voiceBtn" aria-label="Falar"><object data="assets/icons/Reset_buttom_Dual-Infodose.svg" type="image/svg+xml" width="24" height="24"></object></button>
+    <button id="voiceBtn" aria-label="Falar">
+      <object data="assets/icons/Reset_buttom_Dual-Infodose.svg" type="image/svg+xml"></object>
+    </button>
   </div>
 
   <!-- Modal de Login -->
@@ -312,7 +324,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <script type="module">
+  <script type="module"
     /*====================
       Constantes & Estado
     ====================*/
