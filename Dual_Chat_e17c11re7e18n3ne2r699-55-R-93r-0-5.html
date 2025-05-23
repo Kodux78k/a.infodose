@@ -396,7 +396,7 @@
           grp.forEach((para, j) => {
             let cls = j===0?'intro':j===1?'middle':'ending';
             let block = create('div',`response-block ${cls}`,
-              `<p>${para}</p>`
+               `<h3>${titles[j]}</h3><p>${para}</p>`
             );
             block.addEventListener('click',()=>{
               autoAdvance = false;
