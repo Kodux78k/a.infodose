@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Demo • ORB Modular</title>
+  <link rel="stylesheet" href="./arch-orb.css">
+</head>
+<body>
+  <nav class="tabbar">
+    <button id="tab-archetypes" class="tab active">Arquétipos</button>
+    <a href="#arch-nova" class="tab">Nova</a>
+    <a href="#arch-pulse" class="tab">Pulse</a>
+  </nav>
+
+  <main>
+    <section id="stack-archetypes" class="stack">
+      <div id="arch-orb-wrap">
+        <svg id="arch-orb" viewBox="0 0 200 200"></svg>
+      </div>
+      <div class="hud">
+        <button data-arch="serena">Serena</button>
+        <button data-arch="artemis">Artemis</button>
+        <button data-arch="kaos">Kaos</button>
+      </div>
+      <!-- Optional LSPanel controls -->
+      <label><input type="checkbox" id="ls-overlay-lock"> Travar overlay</label>
+      <input type="range" id="ls-overlay-alpha" min="0" max="1" step="0.01" value="0.22">
+      <input type="color" id="ls-overlay-color" value="#409EFF">
+    </section>
+  </main>
+
+  <script src="./arch-orb.js"></script>
+  <script src="./bridge.js"></script>
+  <script>
+    (async function(){
+      await ArchOrb.loadDefs('./arch-orb.svg');
+      ArchOrb.mount('#arch-orb');
+      ArchOrb.set('atlas'); // inicial
+    })();
+  </script>
+</body>
+</html>
