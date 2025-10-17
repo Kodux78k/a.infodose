@@ -1,135 +1,205 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Serena · Farinha ASCII</title>
-<style>
-  :root {
-    --color: #38bdf8;
-    --n: 8;
-    --r: min(34vmin, 220px);
-    --fontSize: clamp(14px, 3.6vmin, 28px);
-    --labelSize: clamp(12px, 2.4vmin, 16px);
-    --bg: transparent;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin:0; padding:0;
-    height:100%; width:100%;
-    background: var(--bg);
-  }
-  body {
-    display:grid; place-items:center;
-    color: var(--color);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    user-select:none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  .stage {
-    position:relative;
-    width:min(80vmin, 520px);
-    height:min(80vmin, 520px);
-  }
-  .ring {
-    position:absolute; inset:0;
-    animation: ring-rot 28s linear infinite;
-    transform-origin: 50% 50%;
-  }
-  @keyframes ring-rot {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-  }
+  <meta charset="UTF-8">
+  <title>Serena · Transição Ritual</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+      height: 100%;
+      opacity: 0;
+      animation: fadeIn 1.5s ease forwards;
+    }
+    .circle {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      animation: spin 60s linear infinite;
+    }
+    .letter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transform-origin: center;
+      animation: fadeOut 4s ease-in-out infinite;
+      opacity: 0.9;
+    }
+    .atom-center {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, white, #60a5fa);
+      box-shadow: 0 0 14px #3b82f6, 0 0 28px #3b82f699;
+      animation: orbitAtom 6s ease-in-out infinite;
+      z-index: 10;
+    }
 
-  .glyph {
-    position:absolute; left:50%; top:50%;
-    transform: rotate(calc(var(--angle))) translate(var(--r)) rotate(calc(-1*var(--angle)));
-    font-size: var(--fontSize);
-    line-height:1;
-    opacity:.9;
-    text-shadow: 0 0 0.25em color-mix(in oklab, var(--color) 70%, transparent);
-    animation: blink 2.6s ease-in-out infinite alternate, bob 5.2s ease-in-out infinite;
-    animation-delay: var(--delay);
-  }
-  @keyframes blink {
-    from { opacity:.55; transform: rotate(calc(var(--angle))) translate(var(--r)) rotate(calc(-1*var(--angle))) scale(0.95); }
-    to   { opacity:.95; transform: rotate(calc(var(--angle))) translate(var(--r)) rotate(calc(-1*var(--angle))) scale(1.05); }
-  }
-  @keyframes bob {
-    0%,100% { letter-spacing: 0px; }
-    50%     { letter-spacing: 1px; }
-  }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-  .center {
-    position:absolute; inset:0;
-    display:grid; place-items:center;
-    gap: 1.2vmin;
-  }
-  .face {
-    font-size: clamp(22px, 8vmin, 64px);
-    line-height:1;
-    filter: drop-shadow(0 0 0.25rem color-mix(in oklab, var(--color) 65%, transparent));
-  }
-  .face::after {
-    content: var(--f1);
-    display:inline-block;
-    animation: face-swap 6s steps(1,end) infinite, face-pulse 2.8s ease-in-out infinite;
-  }
-  @keyframes face-pulse {
-    0%,100% { transform: scale(1); opacity: .95; }
-    50%     { transform: scale(1.06) rotate(2deg); opacity: .85; }
-  }
-  @keyframes face-swap {
-    0%     { content: var(--f1); }
-    25%    { content: var(--f2); }
-    50%    { content: var(--f3); }
-    75%    { content: var(--f4); }
-    100%   { content: var(--f1); }
-  }
+    @keyframes fadeOut {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
 
-  .label {
-    font-size: var(--labelSize);
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    opacity: .8;
-  }
+    @keyframes orbitAtom {
+      0% { top: 50%; left: 50%; transform: translate(-80%, -30%); }
+      25% { top: 60%; left: 40%; transform: translate(-40%, -60%); }
+      50% { top: 50%; left: 60%; transform: translate(-20%, 10%); }
+      75% { top: 40%; left: 50%; transform: translate(0%, -50%); }
+      100% { top: 50%; left: 50%; transform: translate(-80%, -30%); }
+    }
 
-  /* Halo sutil */
-  .halo {
-    position:absolute; left:50%; top:50%;
-    transform: translate(-50%,-50%);
-    width: 68%; height: 68%;
-    border: 1px solid color-mix(in oklab, var(--color) 35%, transparent);
-    border-radius: 50%;
-    opacity: .2;
-  }
-
-  /* Menos movimento se preferido */
-  @media (prefers-reduced-motion: reduce) {
-    .ring { animation-duration: 120s; }
-    .glyph { animation: none; }
-    .face::after { animation: face-swap 10s steps(1,end) infinite; }
-  }
-</style>
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-  <div class="stage" role="img" aria-label="Animação ritual ASCII do arquétipo Serena">
-    <div class="halo" aria-hidden="true"></div>
-    <div class="ring">
-      <span class="glyph" style="--angle:calc(0 * (360deg / 8));--delay:0.00s">~</span>
-      <span class="glyph" style="--angle:calc(1 * (360deg / 8));--delay:0.12s">.</span>
-      <span class="glyph" style="--angle:calc(2 * (360deg / 8));--delay:0.24s">,</span>
-      <span class="glyph" style="--angle:calc(3 * (360deg / 8));--delay:0.36s">`</span>
-      <span class="glyph" style="--angle:calc(4 * (360deg / 8));--delay:0.48s">~</span>
-      <span class="glyph" style="--angle:calc(5 * (360deg / 8));--delay:0.60s">.</span>
-      <span class="glyph" style="--angle:calc(6 * (360deg / 8));--delay:0.72s">,</span>
-      <span class="glyph" style="--angle:calc(7 * (360deg / 8));--delay:0.84s">`</span>
-    </div>
-    <div class="center">
-      <div class="face" style="--f1:'~';--f2:'~~';--f3:'~';--f4:'~~';"></div>
-      <div class="label">[ Serena ]</div>
-    </div>
+  <div class="circle">
+    
+        <div class="letter" style="
+          transform: rotate(0.0deg) translateX(120px) rotate(-0.0deg);
+          animation-delay: 0.0s;">0</div>
+        
+        <div class="letter" style="
+          transform: rotate(11.25deg) translateX(120px) rotate(-11.25deg);
+          animation-delay: 0.1s;">1</div>
+        
+        <div class="letter" style="
+          transform: rotate(22.5deg) translateX(120px) rotate(-22.5deg);
+          animation-delay: 0.2s;">&</div>
+        
+        <div class="letter" style="
+          transform: rotate(33.75deg) translateX(120px) rotate(-33.75deg);
+          animation-delay: 0.3s;">$</div>
+        
+        <div class="letter" style="
+          transform: rotate(45.0deg) translateX(120px) rotate(-45.0deg);
+          animation-delay: 0.4s;">#</div>
+        
+        <div class="letter" style="
+          transform: rotate(56.25deg) translateX(120px) rotate(-56.25deg);
+          animation-delay: 0.5s;">@</div>
+        
+        <div class="letter" style="
+          transform: rotate(67.5deg) translateX(120px) rotate(-67.5deg);
+          animation-delay: 0.6s;">∴</div>
+        
+        <div class="letter" style="
+          transform: rotate(78.75deg) translateX(120px) rotate(-78.75deg);
+          animation-delay: 0.7s;">∵</div>
+        
+        <div class="letter" style="
+          transform: rotate(90.0deg) translateX(120px) rotate(-90.0deg);
+          animation-delay: 0.8s;">*</div>
+        
+        <div class="letter" style="
+          transform: rotate(101.25deg) translateX(120px) rotate(-101.25deg);
+          animation-delay: 0.9s;">+</div>
+        
+        <div class="letter" style="
+          transform: rotate(112.5deg) translateX(120px) rotate(-112.5deg);
+          animation-delay: 1.0s;">=</div>
+        
+        <div class="letter" style="
+          transform: rotate(123.75deg) translateX(120px) rotate(-123.75deg);
+          animation-delay: 1.1s;">○</div>
+        
+        <div class="letter" style="
+          transform: rotate(135.0deg) translateX(120px) rotate(-135.0deg);
+          animation-delay: 1.2s;">●</div>
+        
+        <div class="letter" style="
+          transform: rotate(146.25deg) translateX(120px) rotate(-146.25deg);
+          animation-delay: 1.3s;">•</div>
+        
+        <div class="letter" style="
+          transform: rotate(157.5deg) translateX(120px) rotate(-157.5deg);
+          animation-delay: 1.4s;">▲</div>
+        
+        <div class="letter" style="
+          transform: rotate(168.75deg) translateX(120px) rotate(-168.75deg);
+          animation-delay: 1.5s;">▼</div>
+        
+        <div class="letter" style="
+          transform: rotate(180.0deg) translateX(120px) rotate(-180.0deg);
+          animation-delay: 1.6s;">※</div>
+        
+        <div class="letter" style="
+          transform: rotate(191.25deg) translateX(120px) rotate(-191.25deg);
+          animation-delay: 1.7s;">†</div>
+        
+        <div class="letter" style="
+          transform: rotate(202.5deg) translateX(120px) rotate(-202.5deg);
+          animation-delay: 1.8s;">Ω</div>
+        
+        <div class="letter" style="
+          transform: rotate(213.75deg) translateX(120px) rotate(-213.75deg);
+          animation-delay: 1.9s;">Σ</div>
+        
+        <div class="letter" style="
+          transform: rotate(225.0deg) translateX(120px) rotate(-225.0deg);
+          animation-delay: 2.0s;">ψ</div>
+        
+        <div class="letter" style="
+          transform: rotate(236.25deg) translateX(120px) rotate(-236.25deg);
+          animation-delay: 2.1s;">π</div>
+        
+        <div class="letter" style="
+          transform: rotate(247.5deg) translateX(120px) rotate(-247.5deg);
+          animation-delay: 2.2s;">δ</div>
+        
+        <div class="letter" style="
+          transform: rotate(258.75deg) translateX(120px) rotate(-258.75deg);
+          animation-delay: 2.3s;">φ</div>
+        
+        <div class="letter" style="
+          transform: rotate(270.0deg) translateX(120px) rotate(-270.0deg);
+          animation-delay: 2.4s;">χ</div>
+        
+        <div class="letter" style="
+          transform: rotate(281.25deg) translateX(120px) rotate(-281.25deg);
+          animation-delay: 2.5s;">0</div>
+        
+        <div class="letter" style="
+          transform: rotate(292.5deg) translateX(120px) rotate(-292.5deg);
+          animation-delay: 2.6s;">1</div>
+        
+        <div class="letter" style="
+          transform: rotate(303.75deg) translateX(120px) rotate(-303.75deg);
+          animation-delay: 2.7s;">&</div>
+        
+        <div class="letter" style="
+          transform: rotate(315.0deg) translateX(120px) rotate(-315.0deg);
+          animation-delay: 2.8s;">$</div>
+        
+        <div class="letter" style="
+          transform: rotate(326.25deg) translateX(120px) rotate(-326.25deg);
+          animation-delay: 2.9s;">#</div>
+        
+        <div class="letter" style="
+          transform: rotate(337.5deg) translateX(120px) rotate(-337.5deg);
+          animation-delay: 3.0s;">@</div>
+        
+        <div class="letter" style="
+          transform: rotate(348.75deg) translateX(120px) rotate(-348.75deg);
+          animation-delay: 3.1s;">∴</div>
+        
+    <div class="atom-center"></div>
   </div>
 </body>
 </html>
