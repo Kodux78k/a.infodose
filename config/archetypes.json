@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "default": "atlas",
+  "items": {
+    "atlas": {
+      "title": "Atlas",
+      "path": "./archetypes/atlas.html",
+      "overlay": "#409EFF",
+      "voice": "Daniel",
+      "actions": [
+        "Planejar semana",
+        "Criar OKRs"
+      ],
+      "apps": [
+        "atlas",
+        "aion",
+        "artemis"
+      ]
+    },
+    "nova": {
+      "title": "Nova",
+      "path": "./archetypes/nova.html",
+      "overlay": "#FF52B1",
+      "voice": "Joana",
+      "actions": [
+        "Explodir ideias",
+        "Mapa mental"
+      ],
+      "apps": [
+        "nova",
+        "lumine",
+        "genus"
+      ]
+    },
+    "vitalis": {
+      "title": "Vitalis",
+      "path": "./archetypes/vitalis.html",
+      "overlay": "#34D399",
+      "voice": "Luciana",
+      "actions": [
+        "Rotina 10min",
+        "Reset postura"
+      ],
+      "apps": [
+        "vitalis",
+        "pulse",
+        "aion"
+      ]
+    },
+    "pulse": {
+      "title": "Pulse",
+      "path": "./archetypes/pulse.html",
+      "overlay": "#00BFFF",
+      "voice": "Reed",
+      "actions": [
+        "Tocar trilha",
+        "Respirar 4‑7‑8"
+      ],
+      "apps": [
+        "pulse",
+        "solus",
+        "lumine"
+      ]
+    },
+    "artemis": {
+      "title": "Artemis",
+      "path": "./archetypes/artemis.html",
+      "overlay": "#FFC300",
+      "voice": "Moira",
+      "actions": [
+        "Rota de estudo",
+        "Resumo 5 pontos"
+      ],
+      "apps": [
+        "artemis",
+        "atlas",
+        "nova"
+      ]
+    },
+    "serena": {
+      "title": "Serena",
+      "path": "./archetypes/serena.html",
+      "overlay": "#B684FF",
+      "voice": "Luciana",
+      "actions": [
+        "Acolher agora",
+        "Diário breve"
+      ],
+      "apps": [
+        "serena",
+        "solus",
+        "rhea"
+      ]
+    },
+    "kaos": {
+      "title": "Kaos",
+      "path": "./archetypes/kaos.html",
+      "overlay": "#FF4D6D",
+      "voice": "Daniel",
+      "actions": [
+        "Pergunta impossível",
+        "Inverter premissa"
+      ],
+      "apps": [
+        "kaos",
+        "genus",
+        "nova"
+      ]
+    },
+    "genus": {
+      "title": "Genus",
+      "path": "./archetypes/genus.html",
+      "overlay": "#22C55E",
+      "voice": "Daniel",
+      "actions": [
+        "Gerar protótipo",
+        "Exportar zip"
+      ],
+      "apps": [
+        "genus",
+        "fabricus",
+        "atlas"
+      ]
+    },
+    "lumine": {
+      "title": "Lumine",
+      "path": "./archetypes/lumine.html",
+      "overlay": "#FFD54F",
+      "voice": "Joana",
+      "actions": [
+        "Ideia lúdica",
+        "Cartão inspiração"
+      ],
+      "apps": [
+        "lumine",
+        "nova",
+        "pulse"
+      ]
+    },
+    "rhea": {
+      "title": "Rhea",
+      "path": "./archetypes/rhea.html",
+      "overlay": "#00D1B2",
+      "voice": "Luciana",
+      "actions": [
+        "Memória da semana",
+        "Mensagem gentil"
+      ],
+      "apps": [
+        "rhea",
+        "serena",
+        "solus"
+      ]
+    },
+    "solus": {
+      "title": "Solus",
+      "path": "./archetypes/solus.html",
+      "overlay": "#6495ED",
+      "voice": "Moira",
+      "actions": [
+        "Meditar 5min",
+        "Harmonia instantânea"
+      ],
+      "apps": [
+        "solus",
+        "pulse",
+        "rhea"
+      ]
+    },
+    "aion": {
+      "title": "Aion",
+      "path": "./archetypes/aion.html",
+      "overlay": "#8B5CF6",
+      "voice": "Daniel",
+      "actions": [
+        "Micro‑ação agora",
+        "Sequência 3 passos"
+      ],
+      "apps": [
+        "aion",
+        "atlas",
+        "vitalis"
+      ]
+    }
+  }
+}

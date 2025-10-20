@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "apps": [
+    {
+      "key": "atlas",
+      "title": "Atlas · Cartesius",
+      "desc": "Planejador estratégico com cronogramas e checklists.",
+      "url": "./archetypes/atlas.html",
+      "icon": "atlas"
+    },
+    {
+      "key": "nova",
+      "title": "Nova · Inspira",
+      "desc": "Criativa que desbloqueia ideias com mapas mentais e exercícios.",
+      "url": "./archetypes/nova.html",
+      "icon": "nova"
+    },
+    {
+      "key": "vitalis",
+      "title": "Vitalis · Momentum",
+      "desc": "Rotinas físicas, hacks biológicos e motivação.",
+      "url": "./archetypes/vitalis.html",
+      "icon": "vitalis"
+    },
+    {
+      "key": "pulse",
+      "title": "Pulse · Resona",
+      "desc": "Trilhas sonoras e ajuste de som emocional.",
+      "url": "./archetypes/pulse.html",
+      "icon": "pulse"
+    },
+    {
+      "key": "artemis",
+      "title": "Artemis · Naviga",
+      "desc": "Explora conhecimentos e rotas de aprendizado.",
+      "url": "./archetypes/artemis.html",
+      "icon": "artemis"
+    },
+    {
+      "key": "serena",
+      "title": "Serena · Ampara",
+      "desc": "Acolhimento e suporte emocional.",
+      "url": "./archetypes/serena.html",
+      "icon": "serena"
+    },
+    {
+      "key": "kaos",
+      "title": "Kaos · Disruptor",
+      "desc": "Questiona padrões e propõe soluções ousadas.",
+      "url": "./archetypes/kaos.html",
+      "icon": "kaos"
+    },
+    {
+      "key": "genus",
+      "title": "Genus · Fabricus",
+      "desc": "Protótipos e materialização de ideias.",
+      "url": "./archetypes/genus.html",
+      "icon": "genus"
+    },
+    {
+      "key": "lumine",
+      "title": "Lumine · Brilhare",
+      "desc": "Inspiração leve e atividades lúdicas.",
+      "url": "./archetypes/lumine.html",
+      "icon": "lumine"
+    },
+    {
+      "key": "rhea",
+      "title": "Rhea · Raízes",
+      "desc": "Vínculos e memórias emocionais.",
+      "url": "./archetypes/rhea.html",
+      "icon": "rhea"
+    },
+    {
+      "key": "solus",
+      "title": "Solus · Arcana",
+      "desc": "Harmonização energética e meditação.",
+      "url": "./archetypes/solus.html",
+      "icon": "solus"
+    },
+    {
+      "key": "aion",
+      "title": "Aion · Evolutia",
+      "desc": "Microações estratégicas e evolução.",
+      "url": "./archetypes/aion.html",
+      "icon": "aion"
+    }
+  ]
+}
