@@ -1,32 +1,54 @@
-const CACHE = 'uno-pro-pwa-v1';
+// HUB UNO — sw.js (cache-first for core)
+const CACHE = "uno-core-v1";
+
 const CORE = [
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
-  // Adicione aqui assets críticos para precache (ex. archetypes, apps.json, libs, etc.)
-  // './archetypes/atlas.html',
-  // './apps/apps.json',
+  "./",
+  "./index.html",
+  "./manifest.webmanifest",
+  "./config/apps.json",
+  "./config/archetypes.json"
 ];
 
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)));
+self.addEventListener("install", (e) => {
+  e.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    try { await cache.addAll(CORE); } catch {}
+    await self.skipWaiting();
+  })());
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => k!==CACHE && caches.delete(k)))));
+self.addEventListener("activate", (e) => {
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => (k === CACHE) ? null : caches.delete(k)));
+    await self.clients.claim();
+  })());
 });
 
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
+self.addEventListener("message", (e) => {
+  if (!e.data) return;
+  if (e.data.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("fetch", (e) => {
+  const req = e.request;
+  const url = new URL(req.url);
+  if (req.method !== "GET") return;
   if (url.origin === location.origin) {
-    e.respondWith(
-      caches.match(e.request).then(res => res || fetch(e.request).then(rsp => {
-        const copy = rsp.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
-        return rsp;
-      }).catch(_ => caches.match('./index.html')))
-    );
+    e.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      const cached = await cache.match(req);
+      if (cached) return cached;
+      try {
+        const res = await fetch(req);
+        // only cache basic opaque/success
+        if (res && res.ok && (res.type === "basic" || res.type === "opaque")) {
+          cache.put(req, res.clone());
+        }
+        return res;
+      } catch {
+        return cached || new Response("offline", {status: 503});
+      }
+    })());
   }
 });
